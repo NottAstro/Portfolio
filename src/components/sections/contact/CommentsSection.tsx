@@ -73,16 +73,16 @@ export default function CommentsSection() {
         ease: EASE,
       }}
       viewport={{ once: false, amount: 0.2 }}
-      className="rounded-[28px] md:rounded-[34px] border border-white/10 bg-white/5 backdrop-blur-xl p-5 md:p-8 h-full"
+      className="rounded-[28px] md:rounded-[34px] border border-white/10 bg-white/5 backdrop-blur-xl p-5 md:p-8 lg:p-6 h-full flex flex-col"
     >
       {/* HEADER */}
-      <div className="mb-5 md:mb-6">
+      <div className="mb-5 md:mb-6 lg:mb-4 shrink-0">
         <h3 className="text-xl md:text-2xl font-semibold mb-1">
           Comments
         </h3>
 
         <p className="text-xs md:text-sm text-white/40">
-          Leave your thoughts here
+          Share your thoughts below.
         </p>
       </div>
 
@@ -92,14 +92,14 @@ export default function CommentsSection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: false }}
-        className="space-y-3 md:space-y-4 mb-5 md:mb-6"
+        className="space-y-3 md:space-y-4 lg:space-y-3 mb-5 md:mb-6 lg:mb-4 shrink-0"
       >
         <motion.input
           variants={itemVariants}
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your Name"
-          className="w-full rounded-2xl border border-white/15 bg-black/20 px-4 py-3 md:py-4 outline-none focus:border-white"
+          className="w-full rounded-2xl border border-white/15 bg-black/20 px-4 py-3 md:py-4 lg:py-3 outline-none focus:border-white"
         />
 
         <motion.textarea
@@ -108,12 +108,12 @@ export default function CommentsSection() {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Your Comment"
-          className="w-full rounded-2xl border border-white/15 bg-black/20 px-4 py-3 md:py-4 outline-none resize-none focus:border-white"
+          className="w-full rounded-2xl border border-white/15 bg-black/20 px-4 py-3 md:py-4 lg:py-3 outline-none resize-none focus:border-white lg:h-[76px]"
         />
 
         <motion.label
           variants={itemVariants}
-          className="rounded-2xl border border-dashed border-white/15 bg-black/20 p-3 md:p-4 flex items-center gap-3 cursor-pointer"
+          className="rounded-2xl border border-dashed border-white/15 bg-black/20 p-3 md:p-4 lg:p-3 flex items-center gap-3 cursor-pointer"
         >
           <Upload size={16} />
 
@@ -137,7 +137,7 @@ export default function CommentsSection() {
               exit={{ opacity: 0 }}
               src={preview}
               alt="Preview"
-              className="rounded-2xl h-36 md:h-44 w-full object-cover border border-white/10"
+              className="rounded-2xl h-36 md:h-44 lg:h-24 w-full object-cover border border-white/10"
             />
           )}
         </AnimatePresence>
@@ -148,7 +148,7 @@ export default function CommentsSection() {
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full rounded-2xl py-3 md:py-4 bg-white/10 border border-white/10 transition-all"
+          className="w-full rounded-2xl py-3 md:py-4 lg:py-3 bg-white/10 border border-white/10 transition-all"
         >
           {loading ? 'Posting...' : 'Post Comment'}
         </motion.button>
@@ -160,7 +160,7 @@ export default function CommentsSection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: false }}
-        className="rounded-[24px] md:rounded-[28px] border border-white/10 bg-black/20 p-3 h-[320px] md:h-[420px] overflow-y-auto custom-scroll"
+        className="rounded-[24px] md:rounded-[28px] border border-white/10 bg-black/20 p-3 h-[320px] md:h-[420px] lg:h-auto lg:flex-1 lg:min-h-[140px] overflow-y-auto custom-scroll"
       >
         <div className="space-y-3">
           <AnimatePresence initial={false}>

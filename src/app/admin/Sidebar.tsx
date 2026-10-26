@@ -4,7 +4,6 @@ import Link from "next/link";
 import {
   LayoutDashboard,
   Folder,
-  Award,
   MessageSquare,
   Layers,
   Menu,
@@ -17,7 +16,6 @@ import { useState, useEffect } from "react";
 const MENUS = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
   { name: "Projects", icon: Folder, path: "/admin/projects" },
-  { name: "Certificates", icon: Award, path: "/admin/certificates" },
   { name: "Comments", icon: MessageSquare, path: "/admin/comments" },
   { name: "Tech Stack", icon: Layers, path: "/admin/tech" },
 ];

@@ -168,7 +168,7 @@ export default function Navbar() {
             letterSpacing: '0.1em',
           }}
         >
-          aaryan.dev
+          aaryann.dev
         </span>
 
         {isMobile ? (

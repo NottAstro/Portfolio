@@ -6,7 +6,6 @@ import Sidebar from "@/app/admin/Sidebar";
 import { supabase } from "@/lib/supabase";
 import {
   Eye,
-  Users,
   MessageSquare,
   Layers,
   RefreshCcw,
@@ -20,7 +19,6 @@ export default function DashboardPage() {
 
   const [stats, setStats] = useState({
     projects: 0,
-    certificates: 0,
     comments: 0,
     pinned: 0,
     techStacks: 0,
@@ -51,7 +49,6 @@ export default function DashboardPage() {
     try {
       const [
         projectsRes,
-        certificatesRes,
         commentsRes,
         pinnedRes,
         recentCommentsRes,
@@ -59,13 +56,6 @@ export default function DashboardPage() {
       ] = await Promise.all([
         supabase
           .from("projects")
-          .select("*", {
-            count: "exact",
-            head: true,
-          }),
-
-        supabase
-          .from("certificates")
           .select("*", {
             count: "exact",
             head: true,
@@ -104,7 +94,6 @@ export default function DashboardPage() {
 
       setStats({
         projects: projectsRes.count || 0,
-        certificates: certificatesRes.count || 0,
         comments: commentsRes.count || 0,
         pinned: pinnedRes.count || 0,
         techStacks: techStacksRes.count || 0,
@@ -123,11 +112,6 @@ export default function DashboardPage() {
       icon: Eye,
       title: "Total Projects",
       value: stats.projects,
-    },
-    {
-      icon: Users,
-      title: "Certificates",
-      value: stats.certificates,
     },
     {
       icon: MessageSquare,
@@ -185,7 +169,7 @@ export default function DashboardPage() {
           </div>
 
           {/* TOP CARDS */}
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
             {cards.map((card, i) => {
               const Icon = card.icon;
 
@@ -301,10 +285,6 @@ export default function DashboardPage() {
                 {
                   title: "Projects",
                   desc: `${stats.projects} total projects`,
-                },
-                {
-                  title: "Certificates",
-                  desc: `${stats.certificates} certificates`,
                 },
                 {
                   title: "Comments",

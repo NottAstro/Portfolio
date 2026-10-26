@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import { Code, Layers, ArrowUpRight } from "lucide-react";
+import { Code, Layers, Mail, ArrowUpRight } from "lucide-react";
 import usePortfolio from "@/hooks/usePortfolio";
 import { EASE } from "@/lib/motion";
 
@@ -57,7 +57,7 @@ const pop: Variants = {
 };
 
 const SKILLS = [
-  "Full-Stack Web Dev",
+  "Full-Stack Web Development",
   "React 19 / Next.js",
   "TypeScript & JavaScript",
   "Node.js & Express",
@@ -78,6 +78,7 @@ export default function About() {
   const stats = [
     { icon: Code, value: projects.length, title: "PROJECTS", tab: "projects" },
     { icon: Layers, value: techStacks.length, title: "TECH STACK", tab: "techstack" },
+    { icon: Mail, value: null, title: "CONTACT", tab: "contact" },
   ];
 
   return (
@@ -146,7 +147,7 @@ export default function About() {
             >
               <p style={{ marginBottom: "22px", lineHeight: "1.85" }}>
                 Computer Science undergraduate at <strong>SVKM&apos;s NMIMS MPSTME</strong> (2024–2028),
-                working across <strong>full-stack web development</strong>,
+                working across <strong>full-stack web development</strong>,{" "}
                 <strong>distributed architectures</strong>, <strong>computer vision</strong>,
                 and <strong>algorithmic systems</strong>. From creating modern, interactive web applications
                 with React &amp; Next.js to building fault-tolerant storage engines and real-time AI tools with OpenCV,
@@ -203,8 +204,8 @@ export default function About() {
               }}
             >
               <Image
-                src="/assets/PP.png"
-                alt="Profile"
+                src="/assets/profile.jpg"
+                alt="Aaryan Jain"
                 width={240}
                 height={240}
                 style={{
@@ -225,7 +226,7 @@ export default function About() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: false }}
-          className="grid grid-cols-[1fr] md:grid-cols-[repeat(2,1fr)] gap-[18px] mt-9"
+          className="grid grid-cols-[1fr] md:grid-cols-[repeat(3,1fr)] gap-[18px] mt-9"
         >
           {stats.map(({ icon: Icon, value, title, tab }) => (
             <motion.div

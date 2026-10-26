@@ -182,7 +182,7 @@ export default function WelcomeScreen() {
             color: 'rgba(255,255,255,0.7)',
           }}
         >
-          aaryan.dev
+          aaryann.dev
         </motion.div>
       </motion.div>
     </div>

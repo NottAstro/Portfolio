@@ -213,7 +213,7 @@ export default function Hero({ showApp }: HeroProps) {
               textWrap: "pretty",
             }}
           >
-            Multi-disciplinary software engineer building scalable web applications,
+            Multidisciplinary software engineer building scalable web applications,
             distributed systems, and computer vision tools. Experienced across
             modern frontend engineering with React &amp; Next.js, resilient backend
             architectures, and algorithmic computing with Python, C++, and Java.

@@ -41,7 +41,7 @@ const hoverGrow = {
 }
 
 const INPUT_CLASS =
-  'w-full rounded-2xl border border-white/15 bg-black/20 pl-12 pr-4 py-4 outline-none transition duration-200 focus:border-white focus:ring-1 focus:ring-white/40'
+  'w-full rounded-2xl border border-white/15 bg-black/20 pl-12 pr-4 py-4 lg:py-3 outline-none transition duration-200 focus:border-white focus:ring-1 focus:ring-white/40'
 
 const FIELDS = [
   { icon: User, placeholder: 'Your Name', delay: 0.1 },
@@ -51,7 +51,7 @@ const FIELDS = [
 
 const socialLinks = [
   {
-    title: 'Github',
+    title: 'GitHub',
     user: '@NottAstro',
     icon: FaGithub,
     link: 'https://github.com/NottAstro',
@@ -59,7 +59,7 @@ const socialLinks = [
   },
   {
     title: 'LinkedIn',
-    user: '@jainaaryan',
+    user: '@jainaaryan0410',
     icon: FaLinkedinIn,
     link: 'https://www.linkedin.com/in/jainaaryan0410',
   },
@@ -78,32 +78,36 @@ export default function ContactForm() {
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: EASE }}
       viewport={{ once: false, amount: 0.2 }}
-      className="rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 md:p-8 flex flex-col h-full"
+      className="rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 md:p-8 lg:p-6 flex flex-col h-full"
     >
       {/* HEADER */}
       <motion.div {...fieldMotion(0.05)}>
-        <h2 className="text-2xl md:text-3xl font-bold mb-3">
+        <h2 className="text-2xl md:text-3xl lg:text-2xl font-bold mb-3 lg:mb-1.5">
           Get in Touch
         </h2>
 
-        <p className="text-sm text-white/50 mb-7">
+        <p className="text-sm text-white/50 mb-7 lg:mb-4">
           Feel free to reach out if you want to collaborate,
           discuss ideas, or simply say hello.
         </p>
       </motion.div>
 
-      {/* FORM */}
-      <div className="space-y-4">
+      {/* FORM (the message box stretches to fill spare height on desktop) */}
+      <div className="flex flex-col gap-4 lg:gap-3 lg:flex-1 lg:min-h-0">
         {FIELDS.map(({ icon: Icon, placeholder, delay, multiline }) => (
-          <motion.div key={placeholder} {...fieldMotion(delay)}>
-            <div className="relative">
+          <motion.div
+            key={placeholder}
+            {...fieldMotion(delay)}
+            className={multiline ? 'lg:flex-1 lg:min-h-[76px]' : undefined}
+          >
+            <div className="relative lg:h-full">
               {multiline ? (
                 <>
                   <Icon className="absolute left-4 top-5 text-white/40" />
                   <textarea
                     rows={5}
                     placeholder={placeholder}
-                    className={`${INPUT_CLASS} resize-none`}
+                    className={`${INPUT_CLASS} resize-none lg:h-full`}
                   />
                 </>
               ) : (
@@ -121,7 +125,7 @@ export default function ContactForm() {
           {...fieldMotion(0.28)}
           whileHover={hoverGrow}
           whileTap={{ scale: 0.97 }}
-          className="w-full rounded-2xl py-4 bg-white/10 border border-white/10 flex items-center justify-center gap-2"
+          className="w-full rounded-2xl py-4 lg:py-3 bg-white/10 border border-white/10 flex items-center justify-center gap-2"
         >
           <Send size={16} />
           Send Message
@@ -129,10 +133,10 @@ export default function ContactForm() {
       </div>
 
       {/* SOCIAL */}
-      <div className="border-t border-white/10 pt-5 mt-6">
+      <div className="border-t border-white/10 pt-5 mt-6 lg:pt-4 lg:mt-4">
         <motion.p
           {...fieldMotion(0.34)}
-          className="text-sm text-white/55 mb-4"
+          className="text-sm text-white/55 mb-4 lg:mb-3"
         >
           Connect With Me
         </motion.p>

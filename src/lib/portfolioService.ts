@@ -10,5 +10,4 @@ const fetchTable = async (table: string) => {
 }
 
 export const fetchProjects = () => fetchTable('projects')
-export const fetchCertificates = () => fetchTable('certificates')
 export const fetchTechStacks = () => fetchTable('tech_stack')

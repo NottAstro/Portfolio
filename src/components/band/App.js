@@ -20,7 +20,8 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
-const GLTF_PATH = '/assets/kartu.glb';
+// Bump ?v= whenever the model changes so cached copies are refreshed
+const GLTF_PATH = '/assets/kartu.glb?v=2';
 const TEXTURE_PATH = '/assets/bandd.png';
 
 useGLTF.preload(GLTF_PATH);
@@ -65,7 +66,7 @@ export default function App() {
           pointerEvents: 'auto', // Enable drag
         }}
       >
-        <ambientLight intensity={Math.PI} />
+        <ambientLight intensity={Math.PI * 0.7} />
 
         {/* Keep asset loading inside the canvas: if it suspended the DOM tree,
             React would hide the canvas and its WebGL context would be lost. */}
@@ -225,7 +226,8 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
             }}
           >
             <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial {...materials.base} />
+              {/* Lower env reflections so the photo isn't washed out */}
+              <meshPhysicalMaterial {...materials.base} envMapIntensity={0.35} />
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />

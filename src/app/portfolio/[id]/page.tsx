@@ -52,7 +52,7 @@ function ProjectLink({ href, icon: Icon, label }: { href?: string; icon: LucideI
   ) : (
     <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#101010] border border-white/10 text-white/40 text-sm">
       <Icon size={14} />
-      No Link
+      {label} Unavailable
     </div>
   )
 }
@@ -208,7 +208,7 @@ export default function PortfolioDetailPage() {
 
             <motion.p
               {...slide(40, 0.8, 0.15)}
-              className="text-[12px] leading-6 text-white/60 text-justify mb-7"
+              className="text-[12px] leading-6 text-white/60 text-justify whitespace-pre-line mb-7"
             >
               {project.description}
             </motion.p>
@@ -228,7 +228,7 @@ export default function PortfolioDetailPage() {
               className="flex flex-wrap gap-3 mb-7"
             >
               <ProjectLink href={project.live_url} icon={ExternalLink} label="Live Demo" />
-              <ProjectLink href={project.github_url} icon={GitBranch} label="Github" />
+              <ProjectLink href={project.github_url} icon={GitBranch} label="GitHub" />
             </motion.div>
 
             {/* TECH */}

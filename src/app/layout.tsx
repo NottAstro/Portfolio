@@ -19,11 +19,11 @@ const dmMono = DM_Mono({
 
 export const metadata: Metadata = {
   title: "Aaryan Jain | Software Engineer",
-  description: "Portfolio of Aaryan Jain — Software Engineer, Full Stack Developer, and Algorithm Enthusiast.",
+  description: "Portfolio of Aaryan Jain — Software Engineer, Full-Stack Developer, and Algorithm Enthusiast.",
   authors: [{ name: "Aaryan Jain", url: "https://github.com/NottAstro" }],
   openGraph: {
     title: "Aaryan Jain | Software Engineer",
-    description: "Portfolio of Aaryan Jain — Software Engineer, Full Stack Developer, and Algorithm Enthusiast.",
+    description: "Portfolio of Aaryan Jain — Software Engineer, Full-Stack Developer, and Algorithm Enthusiast.",
     type: "website",
   },
 };

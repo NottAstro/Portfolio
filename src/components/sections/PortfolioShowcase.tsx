@@ -234,7 +234,7 @@ export default function PortfolioShowcase() {
                   )}
 
                   {activeProject?.github_url && (
-                    <ExternalButton href={activeProject.github_url} label="Github" />
+                    <ExternalButton href={activeProject.github_url} label="GitHub" />
                   )}
 
                   {activeProject?.id && (
