@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowRight, ArrowUpRight, Code2, ChevronLeft, ChevronRight, Award, LucideIcon } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Code2, ChevronLeft, ChevronRight, LucideIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import usePortfolio from '@/hooks/usePortfolio'
 import useFloatingHeader from '@/hooks/useFloatingHeader'
@@ -10,7 +10,7 @@ import { EASE } from '@/lib/motion'
 import { splitList } from '@/lib/list'
 import CascadingSlider from './CascadingSlider'
 import StackedProjectCards from './StackedProjectCards'
-import { ProjectsSkeleton, CertificatesSkeleton, TechStackSkeleton } from './Skeletons'
+import { ProjectsSkeleton, TechStackSkeleton } from './Skeletons'
 import GithubContributions from './GithubContributions'
 
 const SECTION_CLASS =
@@ -38,9 +38,6 @@ const slideIn = (from: -1 | 1, delay = 0) => ({
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-const formatCreatedAt = (date: string, month: 'long' | 'short') =>
-  new Date(date).toLocaleDateString('en-US', { month, year: 'numeric' })
-
 function SectionHeader({ title, subtitle }: { title: string; subtitle: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const header = useFloatingHeader(ref)
@@ -63,7 +60,7 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle: string })
   )
 }
 
-// Title / divider / description / tag list for the active project or certificate
+// Title / divider / description / tag list for the active project
 function ItemDetails({
   itemKey,
   title,
@@ -174,43 +171,14 @@ export default function PortfolioShowcase() {
   const router = useRouter()
   const {
     projects,
-    certificates,
     techStacks,
     loading,
   } = usePortfolio()
 
   const [activeProjectIndex, setActiveProjectIndex] = useState(0)
-  const [activeCertIndex, setActiveCertIndex] = useState(0)
-  const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const [previewOpen, setPreviewOpen] = useState(false)
 
   const activeProject = projects[activeProjectIndex] || null
-  const activeCert = certificates[activeCertIndex] || null
-
   const techList = activeProject ? splitList(activeProject.technologies) : []
-
-  const openPreview = (url: string) => {
-    setPreviewImage(url)
-    setPreviewOpen(true)
-  }
-
-  const certDescription =
-    activeCert?.description ||
-    (activeCert?.created_at
-      ? `Professional certification acquired on ${formatCreatedAt(activeCert.created_at, 'long')}. Validated expertise, industry knowledge, and technical dedication.`
-      : 'Professional credential and certification demonstrating industry expertise and technical mastery.')
-
-  const certIssued = activeCert?.issue_date
-    ? activeCert.issue_date.toLowerCase().startsWith('issued')
-      ? activeCert.issue_date
-      : `Issued ${activeCert.issue_date}`
-    : activeCert?.created_at
-      ? `Issued ${formatCreatedAt(activeCert.created_at, 'short')}`
-      : null
-
-  const certTags = activeCert?.tags ? splitList(activeCert.tags) : ['Verified Credential']
-
-  const certBadges = [activeCert?.issuer, certIssued, ...certTags].filter(Boolean)
 
   return (
     <>
@@ -310,111 +278,6 @@ export default function PortfolioShowcase() {
       </section>
 
       {/* ═══════════════════════════════════════════ */}
-      {/* CERTIFICATES SECTION                       */}
-      {/* ═══════════════════════════════════════════ */}
-      <section id="certificates" className={SECTION_CLASS}>
-        <SectionHeader
-          title="Certificates"
-          subtitle="Professional certifications and achievements earned along the way."
-        />
-
-        {/* Certificates Content */}
-        {loading && <CertificatesSkeleton />}
-        {!loading && certificates.length > 0 && (
-          <div className="flex flex-col gap-10">
-            <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] xl:grid-cols-[0.95fr_1.05fr] gap-8 lg:gap-12 xl:gap-20 items-center">
-              {/* LEFT — Stacked Cards (slides in from left) */}
-              <motion.div
-                {...slideIn(-1)}
-                className="order-1 lg:order-1 flex justify-center lg:justify-start w-full lg:pr-6 xl:pr-10"
-              >
-                <div className="w-full max-w-[580px] lg:max-w-[620px] mr-auto">
-                  <StackedProjectCards
-                    items={certificates}
-                    activeIndex={activeCertIndex}
-                    onSelect={setActiveCertIndex}
-                    onCardClick={(item) => {
-                      if (item?.image_url) openPreview(item.image_url)
-                    }}
-                  />
-                </div>
-              </motion.div>
-
-              {/* RIGHT — Description (slides in from right) */}
-              <motion.div
-                {...slideIn(1, 0.1)}
-                className="order-2 lg:order-2 flex flex-col justify-center min-h-[300px] sm:min-h-[360px]"
-              >
-                {/* DYNAMIC CONTENT AREA */}
-                <div className="flex flex-col justify-start">
-                  <ItemDetails
-                    itemKey={activeCert?.id || activeCertIndex}
-                    title={activeCert?.title}
-                    description={certDescription}
-                    metaIcon={Award}
-                    metaLabel="Credential Info"
-                  >
-                    {certBadges.map((badge, i) => (
-                      <span key={i} className={TAG_CLASS}>
-                        {badge}
-                      </span>
-                    ))}
-                  </ItemDetails>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* FULL-WIDTH FIXED ACTION BUTTONS & NAVIGATION ARROWS BAR */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, margin: '-40px' }}
-              transition={{ duration: 0.6, ease: EASE }}
-              className="relative flex flex-col sm:flex-row items-center justify-between sm:justify-end gap-4 pt-6 border-t border-white/10 w-full min-h-[72px]"
-            >
-              {/* LEFT SPACER / OPTIONAL CREDENTIAL LINK */}
-              <div className="hidden sm:flex flex-1 items-center justify-start">
-                {activeCert?.credential_url && (
-                  <ExternalButton href={activeCert.credential_url} label="Verify Credential" />
-                )}
-              </div>
-
-              {/* CERTIFICATE SWITCHER ARROWS IN THE EXACT CENTER OF THE SECTION */}
-              <div className="w-full sm:w-auto flex justify-center sm:absolute sm:left-1/2 sm:-translate-x-1/2">
-                <Pager
-                  index={activeCertIndex}
-                  total={certificates.length}
-                  onChange={setActiveCertIndex}
-                  label="certificate"
-                  className="shadow-lg"
-                />
-              </div>
-
-              {/* VIEW CERTIFICATE ON THE RIGHT SIDE */}
-              <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end gap-3 sm:ml-auto">
-                {activeCert?.credential_url && (
-                  <ExternalButton
-                    href={activeCert.credential_url}
-                    label="Verify Credential"
-                    className="sm:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.08] border border-white/15 hover:bg-white/15 transition-all text-[13px] font-medium text-white shadow-sm"
-                  />
-                )}
-                {activeCert?.image_url && (
-                  <button
-                    onClick={() => openPreview(activeCert.image_url)}
-                    className={SOLID_BUTTON_CLASS}
-                  >
-                    View Certificate
-                    <ArrowUpRight size={15} />
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </section>
-
-      {/* ═══════════════════════════════════════════ */}
       {/* TECH STACK SECTION                         */}
       {/* ═══════════════════════════════════════════ */}
       <section id="techstack" className={SECTION_CLASS}>
@@ -470,35 +333,6 @@ export default function PortfolioShowcase() {
         {/* GITHUB CONTRIBUTIONS GRAPH */}
         <GithubContributions username="NottAstro" />
       </section>
-
-      {/* FULLSCREEN IMAGE PREVIEW */}
-      <AnimatePresence>
-        {previewOpen && previewImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setPreviewOpen(false)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 md:p-12 cursor-zoom-out"
-          >
-            <button
-              onClick={() => setPreviewOpen(false)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition z-[101]"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <motion.img
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              src={previewImage}
-              className="w-auto h-auto max-w-full max-h-[90vh] rounded-xl shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   )
 }

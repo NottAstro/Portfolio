@@ -77,37 +77,6 @@ export function ProjectsSkeleton() {
   )
 }
 
-/* ─── Certificates Skeleton ─── */
-export function CertificatesSkeleton() {
-  return (
-    <div className="flex flex-col gap-10">
-      <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] xl:grid-cols-[0.95fr_1.05fr] gap-8 lg:gap-12 xl:gap-20 items-center">
-        {/* Left — stacked card skeleton */}
-        <StackSkeleton className="order-1" />
-
-        {/* Right — description skeleton */}
-        <div className="flex flex-col gap-4 order-2">
-          <DetailsSkeleton tagCount={3} tagClassName="h-6 w-20 rounded-md" />
-        </div>
-      </div>
-
-      {/* Full-width bottom bar skeleton */}
-      <div className="relative flex flex-col sm:flex-row items-center justify-between sm:justify-end gap-4 pt-6 border-t border-white/10 w-full min-h-[72px]">
-        <div className="w-full sm:w-auto flex justify-center sm:absolute sm:left-1/2 sm:-translate-x-1/2">
-          <div className="flex items-center gap-2">
-            <Bone className="h-9 w-9 rounded-full" />
-            <Bone className="h-4 w-12" />
-            <Bone className="h-9 w-9 rounded-full" />
-          </div>
-        </div>
-        <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end sm:ml-auto">
-          <Bone className="h-10 w-36 rounded-xl" />
-        </div>
-      </div>
-    </div>
-  )
-}
-
 /* ─── Tech Stack Skeleton ─── */
 export function TechStackSkeleton() {
   return (

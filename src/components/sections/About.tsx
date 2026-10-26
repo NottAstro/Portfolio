@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import { Code, Award, Layers, ArrowUpRight } from "lucide-react";
+import { Code, Layers, ArrowUpRight } from "lucide-react";
 import usePortfolio from "@/hooks/usePortfolio";
 import { EASE } from "@/lib/motion";
 
@@ -73,11 +73,10 @@ const SKILLS = [
 /* ================== COMPONENT ================== */
 
 export default function About() {
-  const { projects, certificates, techStacks } = usePortfolio();
+  const { projects, techStacks } = usePortfolio();
 
   const stats = [
     { icon: Code, value: projects.length, title: "PROJECTS", tab: "projects" },
-    { icon: Award, value: certificates.length, title: "CERTIFICATES", tab: "certificates" },
     { icon: Layers, value: techStacks.length, title: "TECH STACK", tab: "techstack" },
   ];
 
@@ -226,7 +225,7 @@ export default function About() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: false }}
-          className="grid grid-cols-[1fr] md:grid-cols-[repeat(3,1fr)] gap-[18px] mt-9"
+          className="grid grid-cols-[1fr] md:grid-cols-[repeat(2,1fr)] gap-[18px] mt-9"
         >
           {stats.map(({ icon: Icon, value, title, tab }) => (
             <motion.div
