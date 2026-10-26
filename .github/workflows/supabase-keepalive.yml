@@ -1,0 +1,51 @@
+# Keeps the free Supabase project from pausing after a week of inactivity by
+# running a tiny read query once a day. Needs two repository variables
+# (Settings -> Secrets and variables -> Actions -> Variables):
+#   SUPABASE_URL       e.g. https://your-project-ref.supabase.co
+#   SUPABASE_ANON_KEY  the public anon key (already exposed to browsers)
+
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # 06:17 UTC every day
+  workflow_dispatch: # allows a manual run from the Actions tab
+
+permissions:
+  actions: write # to re-enable this workflow (see last step)
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query the database
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::Set the SUPABASE_URL and SUPABASE_ANON_KEY repository variables."
+            exit 1
+          fi
+
+          status=$(curl -s -o response.json -w '%{http_code}' \
+            --retry 3 --retry-delay 10 \
+            "$SUPABASE_URL/rest/v1/tech_stack?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+
+          echo "Supabase responded with HTTP $status"
+          if [ "$status" != "200" ]; then
+            cat response.json
+            exit 1
+          fi
+
+      # GitHub disables scheduled workflows in public repos after 60 days without
+      # commits; re-enabling it through GitHub's own API on every run resets that
+      # timer so the schedule never needs manual attention.
+      - name: Keep this schedule enabled
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow enable supabase-keepalive.yml --repo "${{ github.repository }}"
