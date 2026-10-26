@@ -1,8 +1,9 @@
 # Keeps the free Supabase project from pausing after a week of inactivity by
-# running a tiny read query once a day. Needs two repository variables
-# (Settings -> Secrets and variables -> Actions -> Variables):
+# running a tiny read query once a day. Needs two repository secrets
+# (Settings -> Secrets and variables -> Actions -> Secrets), which GitHub
+# masks as *** in logs:
 #   SUPABASE_URL       e.g. https://your-project-ref.supabase.co
-#   SUPABASE_ANON_KEY  the public anon key (already exposed to browsers)
+#   SUPABASE_ANON_KEY  the public anon (publishable) key
 
 name: Supabase keep-alive
 
@@ -22,11 +23,11 @@ jobs:
     steps:
       - name: Query the database
         env:
-          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "::error::Set the SUPABASE_URL and SUPABASE_ANON_KEY repository variables."
+            echo "::error::Set the SUPABASE_URL and SUPABASE_ANON_KEY repository secrets."
             exit 1
           fi
 
