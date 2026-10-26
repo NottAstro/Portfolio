@@ -11,10 +11,11 @@ import { splitList } from '@/lib/list'
 import CascadingSlider from './CascadingSlider'
 import StackedProjectCards from './StackedProjectCards'
 import { ProjectsSkeleton, TechStackSkeleton } from './Skeletons'
-import GithubContributions from './GithubContributions'
 
-const SECTION_CLASS =
-  'w-full max-w-[1450px] mx-auto px-8 md:px-12 lg:px-20 pt-28 pb-16 text-white min-h-screen'
+export const SECTION_BASE_CLASS =
+  'w-full max-w-[1450px] mx-auto px-8 md:px-12 lg:px-20 pt-28 pb-16 text-white'
+
+const SECTION_CLASS = `${SECTION_BASE_CLASS} min-h-screen`
 
 const TAG_CLASS =
   'px-3.5 py-1.5 rounded-lg bg-white/[0.07] border border-white/10 text-[12px] sm:text-[13px] font-medium text-white/80 hover:border-white/20 transition-colors'
@@ -280,7 +281,7 @@ export default function PortfolioShowcase() {
       {/* ═══════════════════════════════════════════ */}
       {/* TECH STACK SECTION                         */}
       {/* ═══════════════════════════════════════════ */}
-      <section id="techstack" className={SECTION_CLASS}>
+      <section id="techstack" className={SECTION_BASE_CLASS}>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -329,9 +330,6 @@ export default function PortfolioShowcase() {
             />
           )}
         </motion.div>
-
-        {/* GITHUB CONTRIBUTIONS GRAPH */}
-        <GithubContributions username="NottAstro" />
       </section>
     </>
   )

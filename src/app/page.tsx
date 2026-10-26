@@ -7,7 +7,9 @@ import AnimatedBackground from '@/components/AnimatedBackground'
 import Navbar from '@/components/ui/Navbar'
 import Hero from '@/components/sections/Hero'
 import About from '@/components/sections/About'
-import PortfolioShowcase from '@/components/sections/PortfolioShowcase'
+import PortfolioShowcase, { SECTION_BASE_CLASS } from '@/components/sections/PortfolioShowcase'
+import GithubContributions from '@/components/sections/GithubContributions'
+import Education from '@/components/sections/Education'
 import ContactSection from '@/components/sections/contact/ContactSection'
 import WelcomeScreen from '@/components/WelcomeScreen'
 
@@ -75,6 +77,10 @@ export default function Home() {
         <Hero showApp={showApp} />
         <About />
         <PortfolioShowcase />
+        <Education />
+        <section className={`${SECTION_BASE_CLASS} pt-0`}>
+          <GithubContributions username="NottAstro" />
+        </section>
         <ContactSection />
       </div>
 
