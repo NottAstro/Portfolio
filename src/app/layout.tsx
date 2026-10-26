@@ -17,14 +17,30 @@ const dmMono = DM_Mono({
   display: "swap",
 });
 
+const SITE_TITLE = "Aaryan Jain | Software Engineer";
+const SITE_DESCRIPTION =
+  "Portfolio of Aaryan Jain — Software Engineer, Full-Stack Developer, and Algorithm Enthusiast.";
+
 export const metadata: Metadata = {
-  title: "Aaryan Jain | Software Engineer",
-  description: "Portfolio of Aaryan Jain — Software Engineer, Full-Stack Developer, and Algorithm Enthusiast.",
+  // Absolute base for link-preview URLs. On Vercel, Next.js falls back to the
+  // production domain automatically when NEXT_PUBLIC_SITE_URL is not set.
+  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
+    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
+    : undefined,
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   authors: [{ name: "Aaryan Jain", url: "https://github.com/NottAstro" }],
   openGraph: {
-    title: "Aaryan Jain | Software Engineer",
-    description: "Portfolio of Aaryan Jain — Software Engineer, Full-Stack Developer, and Algorithm Enthusiast.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    siteName: "Aaryan Jain",
+    locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
   },
 };
 

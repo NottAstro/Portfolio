@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
-import { Upload, Heart, Pin } from 'lucide-react'
+import { Upload, Heart, Pin, X, CheckCircle2, AlertCircle } from 'lucide-react'
 import useComments from '@/hooks/useComments'
+import { COMMENT_LIMITS } from '@/lib/commentService'
 import { EASE } from '@/lib/motion'
 
 const containerVariants: Variants = {
@@ -30,14 +31,25 @@ const itemVariants: Variants = {
   },
 }
 
+type Notice = { kind: 'success' | 'error'; text: string } | null
+
 export default function CommentsSection() {
-  const { comments, loading, addComment, likeComment } =
+  const { comments, loading, loadError, likedIds, addComment, likeComment } =
     useComments()
 
   const [name, setName] = useState('')
   const [comment, setComment] = useState('')
   const [image, setImage] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [notice, setNotice] = useState<Notice>(null)
+  const fileInput = useRef<HTMLInputElement>(null)
+
+  const clearImage = () => {
+    if (preview) URL.revokeObjectURL(preview)
+    setImage(null)
+    setPreview(null)
+    if (fileInput.current) fileInput.current.value = ''
+  }
 
   const handleImage = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -45,23 +57,49 @@ export default function CommentsSection() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    if (!file.type.startsWith('image/')) {
+      clearImage()
+      setNotice({ kind: 'error', text: 'Please choose an image file (JPG, PNG, GIF or WebP).' })
+      return
+    }
+
+    if (file.size > COMMENT_LIMITS.imageBytes) {
+      clearImage()
+      setNotice({ kind: 'error', text: 'That image is larger than 5 MB. Please choose a smaller one.' })
+      return
+    }
+
+    if (preview) URL.revokeObjectURL(preview)
     setImage(file)
     setPreview(URL.createObjectURL(file))
+    setNotice(null)
   }
 
   const handleSubmit = async () => {
-    if (!name.trim() || !comment.trim()) return
+    if (loading) return
 
-    await addComment({
-      name,
-      comment,
-      image,
-    })
+    if (!name.trim() || !comment.trim()) {
+      setNotice({ kind: 'error', text: 'Please enter your name and a comment.' })
+      return
+    }
 
-    setName('')
-    setComment('')
-    setImage(null)
-    setPreview(null)
+    try {
+      await addComment({
+        name,
+        comment,
+        image,
+      })
+
+      setName('')
+      setComment('')
+      clearImage()
+      setNotice({ kind: 'success', text: 'Thanks! Your comment has been posted.' })
+    } catch (err) {
+      setNotice({
+        kind: 'error',
+        text: err instanceof Error ? err.message : 'Your comment could not be posted.',
+      })
+    }
   }
 
   return (
@@ -97,8 +135,15 @@ export default function CommentsSection() {
         <motion.input
           variants={itemVariants}
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value)
+            setNotice(null)
+          }}
           placeholder="Your Name"
+          aria-label="Your Name"
+          autoComplete="name"
+          maxLength={COMMENT_LIMITS.name}
+          disabled={loading}
           className="w-full rounded-2xl border border-white/15 bg-black/20 px-4 py-3 md:py-4 lg:py-3 outline-none focus:border-white"
         />
 
@@ -106,8 +151,14 @@ export default function CommentsSection() {
           variants={itemVariants}
           rows={4}
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          onChange={(e) => {
+            setComment(e.target.value)
+            setNotice(null)
+          }}
           placeholder="Your Comment"
+          aria-label="Your Comment"
+          maxLength={COMMENT_LIMITS.comment}
+          disabled={loading}
           className="w-full rounded-2xl border border-white/15 bg-black/20 px-4 py-3 md:py-4 lg:py-3 outline-none resize-none focus:border-white lg:h-[76px]"
         />
 
@@ -117,28 +168,46 @@ export default function CommentsSection() {
         >
           <Upload size={16} />
 
-          <span className="text-xs md:text-sm text-white/65">
-            Upload Image
+          <span className="text-xs md:text-sm text-white/65 truncate">
+            {image ? image.name : 'Upload Image'}
+          </span>
+
+          <span className="ml-auto text-[11px] text-white/30 shrink-0">
+            Optional, max 5 MB
           </span>
 
           <input
+            ref={fileInput}
             hidden
             type="file"
-            accept="image/*"
+            accept="image/png,image/jpeg,image/gif,image/webp"
             onChange={handleImage}
+            disabled={loading}
           />
         </motion.label>
 
         <AnimatePresence>
           {preview && (
-            <motion.img
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              src={preview}
-              alt="Preview"
-              className="rounded-2xl h-36 md:h-44 lg:h-24 w-full object-cover border border-white/10"
-            />
+              className="relative"
+            >
+              <img
+                src={preview}
+                alt="Selected image preview"
+                className="rounded-2xl h-36 md:h-44 lg:h-24 w-full object-cover border border-white/10"
+              />
+              <button
+                type="button"
+                onClick={clearImage}
+                aria-label="Remove image"
+                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 border border-white/20 flex items-center justify-center hover:bg-black"
+              >
+                <X size={14} />
+              </button>
+            </motion.div>
           )}
         </AnimatePresence>
 
@@ -148,10 +217,27 @@ export default function CommentsSection() {
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full rounded-2xl py-3 md:py-4 lg:py-3 bg-white/10 border border-white/10 transition-all"
+          className="w-full rounded-2xl py-3 md:py-4 lg:py-3 bg-white/10 border border-white/10 transition-all disabled:opacity-60 disabled:cursor-wait"
         >
           {loading ? 'Posting...' : 'Post Comment'}
         </motion.button>
+
+        <div aria-live="polite">
+          {notice && (
+            <p
+              className={`flex items-center gap-2 text-sm ${
+                notice.kind === 'success' ? 'text-emerald-300' : 'text-red-300'
+              }`}
+            >
+              {notice.kind === 'success' ? (
+                <CheckCircle2 size={16} className="shrink-0" />
+              ) : (
+                <AlertCircle size={16} className="shrink-0" />
+              )}
+              {notice.text}
+            </p>
+          )}
+        </div>
       </motion.div>
 
       {/* COMMENTS LIST */}
@@ -162,6 +248,14 @@ export default function CommentsSection() {
         viewport={{ once: false }}
         className="rounded-[24px] md:rounded-[28px] border border-white/10 bg-black/20 p-3 h-[320px] md:h-[420px] lg:h-auto lg:flex-1 lg:min-h-[140px] overflow-y-auto custom-scroll"
       >
+        {comments.length === 0 && (
+          <p className="h-full min-h-[100px] flex items-center justify-center text-center text-sm text-white/35 px-4">
+            {loadError
+              ? 'Comments could not be loaded right now.'
+              : 'No comments yet. Be the first to leave one!'}
+          </p>
+        )}
+
         <div className="space-y-3">
           <AnimatePresence initial={false}>
             {comments.map((item, i) => (
@@ -237,9 +331,15 @@ export default function CommentsSection() {
                     onClick={() =>
                       likeComment(item.id, item.likes)
                     }
-                    className="flex items-center gap-1 text-[11px] text-white/40 hover:text-white transition-colors"
+                    disabled={likedIds.has(item.id)}
+                    aria-label={likedIds.has(item.id) ? 'You liked this comment' : 'Like this comment'}
+                    className={`flex items-center gap-1 text-[11px] transition-colors self-start ${
+                      likedIds.has(item.id)
+                        ? 'text-pink-400 cursor-default'
+                        : 'text-white/40 hover:text-white'
+                    }`}
                   >
-                    <Heart size={13} />
+                    <Heart size={13} fill={likedIds.has(item.id) ? 'currentColor' : 'none'} />
                     {item.likes || 0}
                   </button>
                 </div>

@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Folder,
   MessageSquare,
+  Inbox,
   Layers,
   Menu,
   X,
@@ -16,6 +17,7 @@ import { useState, useEffect } from "react";
 const MENUS = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
   { name: "Projects", icon: Folder, path: "/admin/projects" },
+  { name: "Messages", icon: Inbox, path: "/admin/messages" },
   { name: "Comments", icon: MessageSquare, path: "/admin/comments" },
   { name: "Tech Stack", icon: Layers, path: "/admin/tech" },
 ];
