@@ -1,0 +1,29 @@
+{
+  "saved_at": "2026-10-26T14:52:09.679Z",
+  "projects": [
+    {
+      "id": "bd1a41cc-7f66-46ea-a13b-cbd427454330",
+      "title": "upLoader (Distributed File System)",
+      "image_url": "https://udtedxzenjaswdsyymkc.supabase.co/storage/v1/object/public/projects/1787656033028-0.7234348111714891-dfs_abstract_thumbnail_1787655819439.jpg",
+      "image_urls": [
+        "https://udtedxzenjaswdsyymkc.supabase.co/storage/v1/object/public/projects/1787656033028-0.7234348111714891-dfs_abstract_thumbnail_1787655819439.jpg"
+      ]
+    },
+    {
+      "id": "e3047bd0-e8fa-446a-8300-3cf8d96f0d1c",
+      "title": "Smart Stock",
+      "image_url": "https://udtedxzenjaswdsyymkc.supabase.co/storage/v1/object/public/projects/1787651740817-0.40069165560475917-thumbnail.jpg",
+      "image_urls": [
+        "https://udtedxzenjaswdsyymkc.supabase.co/storage/v1/object/public/projects/1787651740817-0.40069165560475917-thumbnail.jpg"
+      ]
+    },
+    {
+      "id": "7a8a13e8-e9ec-4598-a777-f2ac197ea3df",
+      "title": "Virtual Mouse",
+      "image_url": "https://udtedxzenjaswdsyymkc.supabase.co/storage/v1/object/public/projects/1785876595921-0.55697125878802-watermark-removed-Gemini_Generated_Image_css7dxcss7dxcss7.png",
+      "image_urls": [
+        "https://udtedxzenjaswdsyymkc.supabase.co/storage/v1/object/public/projects/1785876595921-0.55697125878802-watermark-removed-Gemini_Generated_Image_css7dxcss7dxcss7.png"
+      ]
+    }
+  ]
+}

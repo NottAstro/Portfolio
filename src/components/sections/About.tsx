@@ -5,6 +5,7 @@ import { motion, Variants } from "framer-motion";
 import { Code, Layers, Mail, ArrowUpRight } from "lucide-react";
 import usePortfolio from "@/hooks/usePortfolio";
 import { EASE } from "@/lib/motion";
+import { CARD_RADIUS, SECTION_TITLE_CLASS } from "@/lib/styles";
 
 /* ================== ANIMATION ================== */
 
@@ -18,39 +19,36 @@ const container: Variants = {
 };
 
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 35, filter: "blur(8px)" },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
-      duration: 1,
+      duration: 0.6,
       ease: EASE,
     },
   },
 };
 
 const slideLeft: Variants = {
-  hidden: { opacity: 0, x: 70, rotate: 2 },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
-    x: 0,
-    rotate: 0,
+    y: 0,
     transition: {
-      duration: 1.2,
+      duration: 0.6,
       ease: EASE,
     },
   },
 };
 
 const pop: Variants = {
-  hidden: { opacity: 0, scale: 0.92, y: 25 },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
-    scale: 1,
     y: 0,
     transition: {
-      duration: 0.85,
+      duration: 0.6,
       ease: EASE,
     },
   },
@@ -114,12 +112,8 @@ export default function About() {
 
             <motion.div variants={fadeUp}>
               <div
-                style={{
-                  fontSize: "clamp(30px, 5vw, 42px)",
-                  fontWeight: 800,
-                  lineHeight: 1.03,
-                  color: "var(--text-primary)",
-                }}
+                className={SECTION_TITLE_CLASS}
+                style={{ lineHeight: 1.05, color: "var(--text-primary)" }}
               >
                 <div>Aaryan Jain</div>
               </div>
@@ -232,14 +226,15 @@ export default function About() {
             <motion.div
               key={tab}
               variants={pop}
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ backgroundColor: "#202020" }}
+              transition={{ duration: 0.15 }}
               onClick={() =>
                 document.getElementById(tab)?.scrollIntoView({ behavior: "smooth" })
               }
               style={{
                 position: "relative",
                 padding: 18,
-                borderRadius: 16,
+                borderRadius: CARD_RADIUS,
                 border: "1px solid var(--border)",
                 background: "var(--bg-card)",
                 cursor: "pointer",

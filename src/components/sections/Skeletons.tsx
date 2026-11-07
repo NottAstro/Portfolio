@@ -15,16 +15,16 @@ function Bone({ className }: { className?: string }) {
 function StackSkeleton({ className }: { className: string }) {
   return (
     <div className={`relative aspect-[4/3] ${className}`}>
-      {[3, 2, 1, 0].map((depth) => (
+      {[2, 1, 0].map((depth) => (
         <div
           key={depth}
           className="absolute top-0 left-0 w-[calc(100%-80px)]"
           style={{
             transform: `translate(${depth * 30}px, ${depth * 40}px)`,
-            zIndex: 4 - depth,
+            zIndex: 3 - depth,
           }}
         >
-          <div className={`w-full aspect-[4/3] rounded-[22px] border border-white/10 bg-white/[0.04] ${shimmer}`} />
+          <div className={`w-full aspect-[4/3] rounded-[24px] border border-white/10 bg-white/[0.04] ${shimmer}`} />
         </div>
       ))}
     </div>

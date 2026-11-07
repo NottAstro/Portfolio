@@ -93,7 +93,7 @@ export default function CommentsSection() {
       setName('')
       setComment('')
       clearImage()
-      setNotice({ kind: 'success', text: 'Thanks! Your comment has been posted.' })
+      setNotice({ kind: 'success', text: 'Your comment has been posted.' })
     } catch (err) {
       setNotice({
         kind: 'error',
@@ -104,14 +104,14 @@ export default function CommentsSection() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 40 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
       transition={{
         duration: 0.8,
         ease: EASE,
       }}
       viewport={{ once: false, amount: 0.2 }}
-      className="rounded-[28px] md:rounded-[34px] border border-white/10 bg-white/5 backdrop-blur-xl p-5 md:p-8 lg:p-6 h-full flex flex-col"
+      className="rounded-[24px] border border-white/10 bg-white/5 backdrop-blur-xl p-5 md:p-8 lg:p-6 h-full flex flex-col"
     >
       {/* HEADER */}
       <div className="mb-5 md:mb-6 lg:mb-4 shrink-0">
@@ -213,11 +213,10 @@ export default function CommentsSection() {
 
         <motion.button
           variants={itemVariants}
-          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full rounded-2xl py-3 md:py-4 lg:py-3 bg-white/10 border border-white/10 transition-all disabled:opacity-60 disabled:cursor-wait"
+          className="w-full rounded-2xl py-3 md:py-4 lg:py-3 bg-white/10 border border-white/10 hover:bg-white/15 transition-colors disabled:opacity-60 disabled:cursor-wait"
         >
           {loading ? 'Posting...' : 'Post Comment'}
         </motion.button>
@@ -246,13 +245,13 @@ export default function CommentsSection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: false }}
-        className="rounded-[24px] md:rounded-[28px] border border-white/10 bg-black/20 p-3 h-[320px] md:h-[420px] lg:h-auto lg:flex-1 lg:min-h-[140px] overflow-y-auto custom-scroll"
+        className="rounded-[24px] border border-white/10 bg-black/20 p-3 h-[320px] md:h-[420px] lg:h-auto lg:flex-1 lg:min-h-[140px] overflow-y-auto custom-scroll"
       >
         {comments.length === 0 && (
           <p className="h-full min-h-[100px] flex items-center justify-center text-center text-sm text-white/35 px-4">
             {loadError
               ? 'Comments could not be loaded right now.'
-              : 'No comments yet. Be the first to leave one!'}
+              : 'No comments yet. Be the first to leave one.'}
           </p>
         )}
 
@@ -265,19 +264,16 @@ export default function CommentsSection() {
                 initial={{
                   opacity: 0,
                   y: 18,
-                  scale: 0.96,
-                  filter: 'blur(6px)',
+
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
-                  scale: 1,
-                  filter: 'blur(0px)',
+
                 }}
                 exit={{
                   opacity: 0,
                   y: -10,
-                  scale: 0.96,
                 }}
                 transition={{
                   duration: 0.55,
@@ -287,7 +283,7 @@ export default function CommentsSection() {
                     ease: EASE,
                   },
                 }}
-                className={`rounded-[20px] md:rounded-[24px] border p-3 md:p-4 ${
+                className={`rounded-[24px] border p-3 md:p-4 ${
                   item.is_pinned
                     ? 'border-purple-500/30 bg-purple-500/5'
                     : 'border-white/10 bg-white/[0.03]'

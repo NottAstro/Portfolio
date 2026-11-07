@@ -47,11 +47,6 @@ const fieldMotion = (delay: number) => ({
   transition: { delay },
 })
 
-const hoverGrow = {
-  scale: 1.06,
-  transition: { duration: 0.12 },
-}
-
 const INPUT_CLASS =
   'w-full rounded-2xl border bg-black/20 pl-12 pr-4 py-4 lg:py-3 outline-none transition duration-200 focus:border-white focus:ring-1 focus:ring-white/40 disabled:opacity-60'
 
@@ -146,11 +141,11 @@ export default function ContactForm() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.8, ease: EASE }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: EASE }}
       viewport={{ once: false, amount: 0.2 }}
-      className="rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 md:p-8 lg:p-6 flex flex-col h-full"
+      className="rounded-[24px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 md:p-8 lg:p-6 flex flex-col h-full"
     >
       {/* HEADER */}
       <motion.div {...fieldMotion(0.05)}>
@@ -242,9 +237,8 @@ export default function ContactForm() {
           type="submit"
           disabled={sending}
           {...fieldMotion(0.28)}
-          whileHover={sending ? undefined : hoverGrow}
           whileTap={sending ? undefined : { scale: 0.97 }}
-          className="w-full rounded-2xl py-4 lg:py-3 bg-white/10 border border-white/10 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait"
+          className="w-full rounded-2xl py-4 lg:py-3 bg-white/10 border border-white/10 hover:bg-white/15 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait"
         >
           {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
           {sending ? 'Sending...' : 'Send Message'}
@@ -255,7 +249,7 @@ export default function ContactForm() {
           {status.state === 'sent' && (
             <p className="flex items-center gap-2 text-sm text-emerald-300">
               <CheckCircle2 size={16} className="shrink-0" />
-              Thanks! Your message was sent. I&apos;ll get back to you soon.
+              Your message was sent. I&apos;ll get back to you soon.
             </p>
           )}
           {status.state === 'error' && (
@@ -294,7 +288,6 @@ export default function ContactForm() {
                 href={item.link}
                 {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
                 {...fieldMotion(0.42 + i * 0.05)}
-                whileHover={hoverGrow}
                 className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 p-3 flex items-center justify-between${item.wide ? ' sm:col-span-2 p-4' : ''}`}
               >
                 <div className="absolute inset-0 bg-white/[0.04] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-700 ease-out" />

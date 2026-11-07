@@ -17,7 +17,8 @@ export default function StackedProjectCards({
 }: StackedProjectCardsProps) {
   if (!items || items.length === 0) return null;
 
-  const maxVisible = Math.min(items.length, 5);
+  // Only the 3 closest cards are drawn, so more projects never clutter the stack
+  const maxVisible = Math.min(items.length, 3);
 
   // Back-most card first so the active card renders on top
   const stack = Array.from({ length: maxVisible }, (_, i) => {
@@ -68,8 +69,8 @@ export default function StackedProjectCards({
           >
             <div
               className={`
-                w-full aspect-[4/3] rounded-[18px] md:rounded-[22px] overflow-hidden
-                border transition-all duration-300
+                w-full aspect-[4/3] rounded-[24px] overflow-hidden
+                border transition-[border-color,box-shadow] duration-300
                 ${
                   isTop
                     ? "border-white/15 shadow-[0_12px_50px_rgba(0,0,0,0.5)]"

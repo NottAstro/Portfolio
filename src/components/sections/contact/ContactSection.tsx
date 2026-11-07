@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import useFloatingHeader from '@/hooks/useFloatingHeader'
+import { SECTION_TITLE_CLASS } from '@/lib/styles'
 import ContactForm from './ContactForm'
 import CommentsSection from './CommentsSection'
 
@@ -19,7 +20,7 @@ export default function ContactSection() {
       <div ref={headerRef} className="text-center mb-8 sm:mb-10 lg:mb-5 shrink-0">
         <motion.h1
           {...header.title}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 lg:mb-2"
+          className={`${SECTION_TITLE_CLASS} mb-3 sm:mb-4 lg:mb-2`}
         >
           Contact Me
         </motion.h1>

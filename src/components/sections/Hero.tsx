@@ -6,6 +6,7 @@ import { motion, TargetAndTransition } from "framer-motion";
 import { FolderGit2 } from "lucide-react";
 import TextType from "@/components/band/TextType";
 import { EASE } from "@/lib/motion";
+import { hasPlayedIntro, isReturnVisit } from "@/lib/introState";
 
 // three.js + physics are large; load them only on desktop, off the critical path.
 const loadBandCard = () => import("@/components/band/App");
@@ -59,13 +60,14 @@ const ctaStyle = {
 } as const;
 
 export default function Hero({ showApp }: HeroProps) {
-  const [startAnim, setStartAnim] = useState(false);
+  // Returning within the site: the hero is already revealed, so don't animate it in again
+  const [startAnim, setStartAnim] = useState(() => isReturnVisit() && hasPlayedIntro());
   const isDesktop = useSyncExternalStore(subscribeToDesktop, isDesktopViewport, () => false);
 
   useEffect(() => {
     const heroPlayed = sessionStorage.getItem("heroPlayed");
 
-    if (heroPlayed === "true") {
+    if (heroPlayed === "true" || (isReturnVisit() && hasPlayedIntro())) {
       setStartAnim(true);
       return;
     }
@@ -136,8 +138,8 @@ export default function Hero({ showApp }: HeroProps) {
         <div>
           <motion.h1
             {...reveal(
-              { opacity: 0, scale: 0.85, y: 50 },
-              { opacity: 1, scale: 1, y: 0 }
+              { opacity: 0, y: 24 },
+              { opacity: 1, y: 0 }
             )}
             transition={{ duration: 1, ease: EASE }}
             style={{
@@ -151,8 +153,8 @@ export default function Hero({ showApp }: HeroProps) {
 
           <motion.h1
             {...reveal(
-              { opacity: 0, x: -80, rotate: -4 },
-              { opacity: 1, x: 0, rotate: 0 }
+              { opacity: 0, y: 24 },
+              { opacity: 1, y: 0 }
             )}
             transition={{ duration: 1, delay: 0.2, ease: EASE }}
             style={{
@@ -167,7 +169,7 @@ export default function Hero({ showApp }: HeroProps) {
 
         {/* STATUS */}
         <motion.div
-          {...reveal({ opacity: 0, x: 40 }, { opacity: 1, x: 0 })}
+          {...reveal({ opacity: 0, y: 24 }, { opacity: 1, y: 0 })}
           transition={{ duration: 0.8, delay: 0.35 }}
           style={{ marginBottom: 14 }}
         >
@@ -194,8 +196,8 @@ export default function Hero({ showApp }: HeroProps) {
         {/* DESC */}
         <motion.div
           {...reveal(
-            { opacity: 0, y: 50, scale: 0.96 },
-            { opacity: 1, y: 0, scale: 1 }
+            { opacity: 0, y: 24 },
+            { opacity: 1, y: 0 }
           )}
           transition={{ duration: 1, delay: 0.5 }}
           style={{
@@ -309,7 +311,7 @@ export default function Hero({ showApp }: HeroProps) {
 
       {/* SCROLL INDICATOR */}
       <motion.div
-        {...reveal({ opacity: 0, y: 80 }, { opacity: 1, y: 0 })}
+        {...reveal({ opacity: 0, y: 24 }, { opacity: 1, y: 0 })}
         transition={{
           duration: 0.9,
           delay: 1.2,
@@ -318,18 +320,7 @@ export default function Hero({ showApp }: HeroProps) {
         className="absolute left-1/2 z-20 pointer-events-none w-0 flex justify-center"
         style={{ bottom: 54 }}
       >
-        <motion.div
-          animate={{
-            y: [0, 6, 0],
-            opacity: [1, 0.65, 1],
-          }}
-          transition={{
-            duration: 1.4,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="flex items-center justify-center gap-2"
-        >
+        <div className="flex items-center justify-center gap-2">
           <span
             style={{
               fontFamily: "var(--font-dm-mono), 'DM Mono', monospace",
@@ -351,7 +342,7 @@ export default function Hero({ showApp }: HeroProps) {
           >
             ↓
           </span>
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   );

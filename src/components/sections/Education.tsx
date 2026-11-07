@@ -16,6 +16,7 @@ import {
 import useFloatingHeader from '@/hooks/useFloatingHeader'
 import usePortfolio from '@/hooks/usePortfolio'
 import { EASE } from '@/lib/motion'
+import { SECTION_TITLE_CLASS } from '@/lib/styles'
 
 type EducationEntry = {
   degree: string
@@ -68,10 +69,10 @@ const CHIP_CLASS =
   'px-3.5 py-1.5 short:px-3 short:py-1 rounded-lg bg-white/[0.07] border border-white/10 text-[13px] sm:text-[14px] lg:text-[15px] short:text-[13px] font-medium text-white/80 hover:border-white/20 transition-colors'
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 40 },
+  initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: false, margin: '-60px' },
-  transition: { duration: 0.8, delay, ease: EASE },
+  transition: { duration: 0.6, delay, ease: EASE },
 })
 
 function GroupLabel({ icon: Icon, label }: { icon: typeof BookOpen; label: string }) {
@@ -135,7 +136,7 @@ export default function Education() {
       <div ref={headerRef} className="mb-14 lg:mb-6 short:mb-4 flex flex-col items-center text-center">
         <motion.h2
           {...header.title}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl short:text-5xl font-bold tracking-tight mb-4 lg:mb-3 short:mb-1.5"
+          className={`${SECTION_TITLE_CLASS} mb-4 lg:mb-3 short:mb-1.5`}
         >
           Education
         </motion.h2>
@@ -161,7 +162,7 @@ export default function Education() {
             </div>
 
             {/* Card */}
-            <div className="flex-1 min-w-0 rounded-[22px] md:rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 sm:p-8 lg:px-12 lg:py-9 short:px-9 short:py-6 flex flex-col gap-6 short:gap-4">
+            <div className="flex-1 min-w-0 rounded-[24px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 sm:p-8 lg:px-12 lg:py-9 short:px-9 short:py-6 flex flex-col gap-6 short:gap-4">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div className="min-w-0">
                   <h3 className="text-3xl sm:text-4xl lg:text-[42px] short:text-[34px] font-bold leading-[1.2] tracking-tight">
@@ -186,7 +187,7 @@ export default function Education() {
                   </span>
                   {entry.status && (
                     <span className="inline-flex items-center gap-2 px-4 py-2 short:py-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 text-[13px] sm:text-[14px] text-emerald-300">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
                       {entry.status}
                     </span>
                   )}

@@ -12,6 +12,7 @@ import {
 import { FaGithub } from 'react-icons/fa'
 import useFloatingHeader, { FloatConfig, useFloatIn } from '@/hooks/useFloatingHeader'
 import { EASE } from '@/lib/motion'
+import { CARD_RADIUS_CLASS, SECTION_TITLE_CLASS } from '@/lib/styles'
 
 type ContributionDay = {
   date: string
@@ -65,9 +66,9 @@ const LEVEL_CLASSES = [
 
 /* ================== ANIMATION ================== */
 
-const BADGE: FloatConfig = { hidden: { opacity: 0, y: 20, scale: 0.9 }, duration: 0.6 }
-const TITLE: FloatConfig = { hidden: { opacity: 0, y: 40 }, bob: -8, bobDuration: 4 }
-const SUBTITLE: FloatConfig = { hidden: { opacity: 0, y: 30 }, delay: 0.1, bob: -4, bobDuration: 4.4 }
+const BADGE: FloatConfig = { hidden: { opacity: 0, y: 16 } }
+const TITLE: FloatConfig = { hidden: { opacity: 0, y: 24 }, delay: 0.05 }
+const SUBTITLE: FloatConfig = { hidden: { opacity: 0, y: 16 }, delay: 0.15 }
 
 const statsContainerVariants: Variants = {
   hidden: {},
@@ -79,26 +80,24 @@ const statsContainerVariants: Variants = {
 }
 
 const popVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.92, y: 25 },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
-    scale: 1,
     y: 0,
     transition: {
-      duration: 0.7,
+      duration: 0.6,
       ease: EASE,
     },
   },
 }
 
 const fadeUpVariants: Variants = {
-  hidden: { opacity: 0, y: 35, filter: 'blur(6px)' },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
     y: 0,
-    filter: 'blur(0px)',
     transition: {
-      duration: 0.85,
+      duration: 0.6,
       ease: EASE,
     },
   },
@@ -302,7 +301,7 @@ export default function GithubContributions({
                   })
                 }}
                 onMouseLeave={() => setHoveredDay(null)}
-                className={`w-full aspect-square rounded-[3px] transition-all duration-150 cursor-pointer hover:scale-[1.35] hover:z-30 ${
+                className={`w-full aspect-square rounded-[3px] transition-[border-color,box-shadow] duration-150 cursor-pointer hover:z-30 ${
                   LEVEL_CLASSES[Math.min(day.level, 4)] || LEVEL_CLASSES[0]
                 }`}
               />
@@ -359,7 +358,7 @@ export default function GithubContributions({
           {...badge}
           className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-[12px] font-medium text-white/80 backdrop-blur-md mb-3.5 shadow-sm"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-emerald-400" />
           <span className="font-mono tracking-wider uppercase text-[11px] text-white/70">
             Open Source Activity
           </span>
@@ -367,7 +366,7 @@ export default function GithubContributions({
 
         <motion.h3
           {...header.title}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-3"
+          className={`${SECTION_TITLE_CLASS} text-white mb-3`}
         >
           GitHub Contributions
         </motion.h3>
@@ -395,7 +394,7 @@ export default function GithubContributions({
         initial="hidden"
         whileInView="show"
         viewport={{ once: false, margin: '-70px' }}
-        className="relative rounded-[28px] border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5 sm:p-7 md:p-9 shadow-2xl overflow-hidden"
+        className={`relative ${CARD_RADIUS_CLASS} border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5 sm:p-7 md:p-9 shadow-2xl overflow-hidden`}
       >
         {/* Soft Ambient Glows */}
         <div className="absolute -top-24 -right-24 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -404,12 +403,11 @@ export default function GithubContributions({
         {/* TOP BAR: Profile + Year Switcher + Profile Link */}
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div className="flex items-center gap-3.5">
-            <motion.div
-              whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.4 } }}
+            <div
               className="w-11 h-11 rounded-2xl bg-white/[0.08] border border-white/10 flex items-center justify-center text-white shadow-inner"
             >
               <FaGithub size={22} />
-            </motion.div>
+            </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[16px] sm:text-[18px] font-bold text-white tracking-tight">
@@ -431,10 +429,9 @@ export default function GithubContributions({
               {availableYears.map((year) => (
                 <motion.button
                   key={year}
-                  whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={() => setSelectedYear(year)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 ${
                     selectedYear === year
                       ? 'bg-white text-black font-semibold shadow-md'
                       : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
@@ -450,9 +447,8 @@ export default function GithubContributions({
               href={`https://github.com/${username}`}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, translateY: -2 }}
               whileTap={{ scale: 0.96 }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/[0.07] border border-white/10 hover:bg-white/15 hover:border-white/25 text-white text-xs font-medium transition-all duration-300 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/[0.07] border border-white/10 hover:bg-white/15 hover:border-white/25 text-white text-xs font-medium transition-colors duration-200 shadow-sm"
             >
               <span>Profile</span>
               <ArrowUpRight size={14} />
@@ -472,8 +468,7 @@ export default function GithubContributions({
             <motion.div
               key={metric.label}
               variants={popVariants}
-              whileHover={{ scale: 1.03, y: -4, transition: { duration: 0.2 } }}
-              className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col justify-between transition-colors hover:border-white/25"
+              className={`p-4 ${CARD_RADIUS_CLASS} bg-white/[0.03] border border-white/10 flex flex-col justify-between transition-colors hover:border-white/25`}
             >
               <div className="flex items-center justify-between text-white/50 mb-2">
                 <span className="text-[11px] sm:text-[12px] font-medium uppercase tracking-wider">

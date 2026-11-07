@@ -7,7 +7,10 @@ import { useRouter } from 'next/navigation'
 import usePortfolio from '@/hooks/usePortfolio'
 import useFloatingHeader from '@/hooks/useFloatingHeader'
 import { EASE } from '@/lib/motion'
+import { SECTION_TITLE_CLASS } from '@/lib/styles'
 import { splitList } from '@/lib/list'
+import { getActiveProjectId, markReturnToProjects, setActiveProjectId } from '@/lib/projectReturn'
+import { isPageReload } from '@/lib/introState'
 import CascadingSlider from './CascadingSlider'
 import StackedProjectCards from './StackedProjectCards'
 import { ProjectsSkeleton, TechStackSkeleton } from './Skeletons'
@@ -21,13 +24,13 @@ const TAG_CLASS =
   'px-3.5 py-1.5 rounded-lg bg-white/[0.07] border border-white/10 text-[12px] sm:text-[13px] font-medium text-white/80 hover:border-white/20 transition-colors'
 
 const OUTLINE_BUTTON_CLASS =
-  'flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.08] border border-white/15 hover:bg-white/15 hover:border-white/30 transition-all duration-300 text-[13px] sm:text-[14px] font-medium text-white shadow-sm'
+  'flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.08] border border-white/15 hover:bg-white/15 hover:border-white/30 transition-colors duration-200 text-[13px] sm:text-[14px] font-medium text-white shadow-sm'
 
 const SOLID_BUTTON_CLASS =
-  'flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black font-semibold text-[13px] sm:text-[14px] hover:bg-white/90 hover:shadow-lg transition-all duration-300'
+  'flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black font-semibold text-[13px] sm:text-[14px] hover:bg-white/90 transition-colors duration-200'
 
 const PAGER_BUTTON_CLASS =
-  'w-9 h-9 rounded-full bg-white/[0.06] hover:bg-white/20 active:scale-95 transition-all duration-200 flex items-center justify-center text-white/80 hover:text-white'
+  'w-9 h-9 rounded-full bg-white/[0.06] hover:bg-white/20 active:scale-95 transition-[background-color,color,transform] duration-200 flex items-center justify-center text-white/80 hover:text-white'
 
 // Props for a column that slides in from the left (-1) or right (1)
 const slideIn = (from: -1 | 1, delay = 0) => ({
@@ -47,7 +50,7 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle: string })
     <div ref={ref} className="mb-14 flex flex-col items-center text-center">
       <motion.h2
         {...header.title}
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4"
+        className={`${SECTION_TITLE_CLASS} mb-4`}
       >
         {title}
       </motion.h2>
@@ -176,7 +179,24 @@ export default function PortfolioShowcase() {
     loading,
   } = usePortfolio()
 
-  const [activeProjectIndex, setActiveProjectIndex] = useState(0)
+  // Track the selected project by id (kept for this browser session), so
+  // returning from a project page shows the same project again. A page
+  // reload starts over at the first project.
+  const [activeProjectId, setActiveId] = useState<string | null>(() =>
+    typeof window === 'undefined' || isPageReload() ? null : getActiveProjectId()
+  )
+
+  const activeProjectIndex = Math.max(
+    0,
+    projects.findIndex((p) => p.id === activeProjectId)
+  )
+
+  const setActiveProjectIndex = (index: number) => {
+    const id = projects[index]?.id
+    if (!id) return
+    setActiveId(id)
+    setActiveProjectId(id)
+  }
 
   const activeProject = projects[activeProjectIndex] || null
   const techList = activeProject ? splitList(activeProject.technologies) : []
@@ -240,9 +260,11 @@ export default function PortfolioShowcase() {
 
                   {activeProject?.id && (
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        setActiveProjectId(activeProject.id)
+                        markReturnToProjects()
                         router.push(`/portfolio/${activeProject.id}`)
-                      }
+                      }}
                       className={SOLID_BUTTON_CLASS}
                     >
                       View Details
@@ -289,7 +311,7 @@ export default function PortfolioShowcase() {
           transition={{ duration: 0.7, ease: EASE }}
           className="mb-14 flex flex-col items-center text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+          <h2 className={`${SECTION_TITLE_CLASS} mb-4`}>
             Tech Stack
           </h2>
           <p className="text-white/50 text-[15px] leading-relaxed max-w-xl">
@@ -310,7 +332,7 @@ export default function PortfolioShowcase() {
               renderItem={(item) => (
                 <div className="group relative p-6 flex flex-col items-center justify-center gap-6 h-[180px] w-full max-w-[280px] mx-auto">
                   <div className="relative flex items-center justify-center">
-                    <div className="absolute w-[120px] h-[120px] rounded-full bg-white/20 blur-2xl opacity-0 group-hover:opacity-100 transition duration-500" />
+                    <div className="absolute w-[120px] h-[120px] rounded-full bg-white/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                     {item.logo_url ? (
                       <img

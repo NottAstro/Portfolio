@@ -16,9 +16,11 @@ import WelcomeScreen from '@/components/WelcomeScreen'
 import {
   hasPlayedIntro,
   isPageReload,
+  markHomeMounted,
   resetIntroFlags,
   setIntroPlayed,
 } from '@/lib/introState'
+import { clearActiveProjectId, consumeReturnToProjects } from '@/lib/projectReturn'
 
 export default function Home() {
   const [showWelcome, setShowWelcome] = useState(false)
@@ -32,16 +34,30 @@ export default function Home() {
     }
   }, [])
 
+  // Any later visit to this page in the same tab is a return, not a reload
+  useEffect(() => () => markHomeMounted(), [])
+
   useEffect(() => {
-    // If navigating back from detail to projects
-    if (window.location.hash === '#projects') {
+    // Coming back from a project page (its Back button or the browser's):
+    // skip the intro and land on the Projects section, on the same project
+    const returning = !isPageReload() && consumeReturnToProjects()
+
+    if (returning || window.location.hash === '#projects') {
       setShowWelcome(false)
       setShowApp(true)
+
+      if (returning) {
+        setTimeout(() =>
+          document.getElementById('projects')?.scrollIntoView({ behavior: 'instant' })
+        )
+      }
       return
     }
 
     if (isPageReload()) {
       resetIntroFlags()
+      consumeReturnToProjects()
+      clearActiveProjectId()
 
       if (window.location.hash) {
         history.replaceState(null, '', '/')

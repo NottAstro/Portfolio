@@ -165,9 +165,11 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
           Math.min(1, ref.current.lerped.distanceTo(ref.current.translation()))
         );
 
+        // Capped at 1: after a long frame gap (e.g. returning to a background tab)
+        // a larger factor overshoots and the band's points become NaN
         ref.current.lerped.lerp(
           ref.current.translation(),
-          delta * (minSpeed + d * (maxSpeed - minSpeed))
+          Math.min(1, delta * (minSpeed + d * (maxSpeed - minSpeed)))
         );
       });
 

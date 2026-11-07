@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { EASE } from '@/lib/motion'
+import { isReturnVisit } from '@/lib/introState'
 
 const NAV_ITEMS = [
   { label: 'Home', id: 'home' },
@@ -27,7 +28,9 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false)
 
   // Navbar appears only once
-  const [showNavbar, setShowNavbar] = useState(false)
+  const [showNavbar, setShowNavbar] = useState(
+    () => isReturnVisit() && !!sessionStorage.getItem('navbarPlayed')
+  )
 
   useEffect(() => {
     setMounted(true)
@@ -129,7 +132,7 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ opacity: 0, y: -40 }}
+      initial={showNavbar ? false : { opacity: 0, y: -40 }}
       animate={{
         opacity: showNavbar ? 1 : 0,
         y: showNavbar ? 0 : -40,
