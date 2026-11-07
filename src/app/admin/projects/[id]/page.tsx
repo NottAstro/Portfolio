@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { uploadPublicImage } from "@/lib/storage";
+import { storageFileName, uploadPublicImage } from "@/lib/storage";
 import { splitList } from "@/lib/list";
 import { confirmDelete, errorAlert, successToast } from "@/lib/alerts";
 
@@ -83,10 +83,10 @@ export default function ProjectDetailPage() {
       for (const image of newImages) {
         try {
           uploadedUrls.push(
-            await uploadPublicImage("projects", `${Date.now()}-${Math.random()}-${image.name}`, image)
+            await uploadPublicImage("projects", storageFileName(image), image)
           );
         } catch {
-          errorAlert("Upload Failed", "Storage bucket error. Make sure the 'projects' bucket exists and allows uploads.", BG);
+          errorAlert("Upload Failed", "Use PNG, JPG, WebP or GIF images under 10 MB.", BG);
           setIsUploading(false);
           return;
         }
@@ -434,7 +434,7 @@ export default function ProjectDetailPage() {
                   type="file"
                   multiple
                   hidden
-                  accept="image/*"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
                   onChange={(e) => {
                     const files = Array.from(e.target.files || []);
                     setNewImages(files);

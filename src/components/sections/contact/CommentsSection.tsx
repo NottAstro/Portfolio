@@ -321,6 +321,25 @@ export default function CommentsSection() {
                         className="mt-3 rounded-xl w-full max-h-48 md:max-h-56 object-cover border border-white/10"
                       />
                     )}
+
+                    {item.liked_by_admin && (
+                      <p className="mt-2 flex items-center gap-1 text-[11px] text-pink-300/80">
+                        <Heart size={11} fill="currentColor" />
+                        Liked by Aaryan
+                      </p>
+                    )}
+
+                    {/* Replies written from the admin panel */}
+                    {item.replies?.length > 0 && (
+                      <div className="mt-3 space-y-2 border-l border-white/10 pl-3">
+                        {item.replies.map((reply, r) => (
+                          <div key={r}>
+                            <p className="text-[11px] font-medium text-white/80">Aaryan</p>
+                            <p className="text-[12px] md:text-[13px] text-white/55 break-words">{reply.message}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <button

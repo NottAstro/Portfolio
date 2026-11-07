@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { uploadPublicImage } from "@/lib/storage";
+import { storageFileName, uploadPublicImage } from "@/lib/storage";
 import { splitList } from "@/lib/list";
 import { Upload, X } from "lucide-react";
 
@@ -84,12 +84,12 @@ export default function AddProjectModal({
           uploadedUrls.push(
             await uploadPublicImage(
               "projects",
-              `${Date.now()}-${Math.random()}-${image.name}`,
+              storageFileName(image),
               image
             )
           );
         } catch {
-          showToast("Image upload failed. Check Storage policies.");
+          showToast("Image upload failed. Use PNG, JPG, WebP or GIF under 10 MB.");
           setLoading(false);
           return;
         }
@@ -204,10 +204,14 @@ export default function AddProjectModal({
                 <span className="text-[11px] text-white/60">
                   Upload Images
                 </span>
+                <span className="text-[10px] text-white/30 mt-0.5">
+                  4:3, e.g. 1600×1200
+                </span>
 
                 <input
                   type="file"
                   multiple
+                  accept="image/png,image/jpeg,image/webp,image/gif"
                   hidden
                   onChange={handleImages}
                 />
@@ -267,7 +271,7 @@ export default function AddProjectModal({
             />
 
             <input
-              placeholder="Github URL"
+              placeholder="GitHub URL"
               value={github}
               onChange={(e) =>
                 setGithub(e.target.value)
@@ -278,7 +282,7 @@ export default function AddProjectModal({
 
           {/* TECH */}
           <input
-            placeholder="Technologies"
+            placeholder="Technologies (comma-separated)"
             value={tech}
             onChange={(e) =>
               setTech(e.target.value)
@@ -288,7 +292,7 @@ export default function AddProjectModal({
 
           {/* FEATURES */}
           <input
-            placeholder="Key Features"
+            placeholder="Key features (comma-separated)"
             value={features}
             onChange={(e) =>
               setFeatures(e.target.value)

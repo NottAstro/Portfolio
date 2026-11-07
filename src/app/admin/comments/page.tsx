@@ -4,7 +4,7 @@ import { useState } from "react";
 import Sidebar from "@/app/admin/Sidebar";
 import { supabase } from "@/lib/supabase";
 import { fetchCommentsService } from "@/lib/commentService";
-import { confirmDelete, successToast } from "@/lib/alerts";
+import { confirmDelete, errorAlert, successToast } from "@/lib/alerts";
 import useRealtimeTable from "@/hooks/useRealtimeTable";
 import {
   Trash2,
@@ -32,11 +32,17 @@ export default function AdminCommentsPage() {
 
   // Saves `patch` to the DB row and mirrors it in local state
   const updateComment = async (id: number, patch: Record<string, unknown>) => {
-    await supabase.from("comments").update(patch).eq("id", id);
+    const { data, error } = await supabase.from("comments").update(patch).eq("id", id).select("id");
+
+    if (error || !data?.length) {
+      errorAlert("Not saved", error?.message || "You don't have permission to change this comment.", BG);
+      return false;
+    }
 
     setComments((prev) =>
       prev.map((item) => (item.id === id ? { ...item, ...patch } : item)),
     );
+    return true;
   };
 
   const deleteComment = async (id: number) => {
@@ -49,7 +55,12 @@ export default function AdminCommentsPage() {
 
     if (!result.isConfirmed) return;
 
-    await supabase.from("comments").delete().eq("id", id);
+    const { data, error } = await supabase.from("comments").delete().eq("id", id).select("id");
+
+    if (error || !data?.length) {
+      errorAlert("Not deleted", error?.message || "You don't have permission to delete this comment.", BG);
+      return;
+    }
 
     setComments((prev) => prev.filter((item) => item.id !== id));
 
@@ -72,7 +83,7 @@ export default function AdminCommentsPage() {
 
     const target = comments.find((x) => x.id === commentId);
 
-    await updateComment(commentId, {
+    const saved = await updateComment(commentId, {
       replies: [
         ...(target?.replies || []),
         {
@@ -82,6 +93,8 @@ export default function AdminCommentsPage() {
         },
       ],
     });
+
+    if (!saved) return;
 
     setReplyText((prev) => ({
       ...prev,

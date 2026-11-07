@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Lock,
   Mail,
@@ -11,6 +11,18 @@ import {
   ShieldCheck,
   Loader2,
 } from "lucide-react";
+
+// Shown when the proxy signed out an account that isn't the admin
+function NotAdminNotice() {
+  const params = useSearchParams();
+  if (params.get("error") !== "not-admin") return null;
+
+  return (
+    <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+      This account doesn&apos;t have admin access.
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -84,6 +96,10 @@ export default function LoginPage() {
           )}
 
           {/* ERROR */}
+          <Suspense fallback={null}>
+            <NotAdminNotice />
+          </Suspense>
+
           {errorMsg && (
             <div className="mb-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
               {errorMsg}

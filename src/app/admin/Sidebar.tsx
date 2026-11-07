@@ -9,8 +9,10 @@ import {
   Layers,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
@@ -105,10 +107,30 @@ function SidebarContent({
       </div>
 
       {/* BOTTOM */}
-      <div className="text-xs text-white/35 tracking-wide">
-        © 2026 Admin
-      </div>
+      <SignOutButton />
     </>
+  );
+}
+
+function SignOutButton() {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+
+  const signOut = async () => {
+    setBusy(true);
+    await supabase.auth.signOut();
+    router.replace("/admin/login");
+  };
+
+  return (
+    <button
+      onClick={signOut}
+      disabled={busy}
+      className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
+    >
+      <LogOut size={17} />
+      {busy ? "Signing out..." : "Sign out"}
+    </button>
   );
 }
 

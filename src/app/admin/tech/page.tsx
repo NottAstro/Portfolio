@@ -4,7 +4,7 @@ import { useState } from "react";
 import Sidebar from "@/app/admin/Sidebar";
 import { supabase } from "@/lib/supabase";
 import { fetchTechStacks } from "@/lib/portfolioService";
-import { uploadPublicImage } from "@/lib/storage";
+import { storageFileName, uploadPublicImage } from "@/lib/storage";
 import { confirmDelete, errorAlert, successToast } from "@/lib/alerts";
 import useRealtimeTable from "@/hooks/useRealtimeTable";
 import { Plus, Trash2, Pencil, X, Upload } from "lucide-react";
@@ -54,9 +54,9 @@ export default function TechStackPage() {
 
     if (logo) {
       try {
-        logoUrl = await uploadPublicImage("tech-stack", `tech-${Date.now()}-${logo.name}`, logo);
+        logoUrl = await uploadPublicImage("tech-stack", storageFileName(logo, "tech-"), logo);
       } catch {
-        errorAlert("Upload Failed", "Storage bucket error. Make sure the 'tech-stack' bucket exists and allows uploads.");
+        errorAlert("Upload Failed", "Use a PNG, JPG, WebP, GIF or SVG logo under 2 MB.");
         setSaving(false);
         return;
       }
