@@ -5,8 +5,26 @@ import type { NextRequest } from "next/server";
 // Guards every /admin page: the visitor must be signed in AND be the admin
 // account (checked by the database's is_admin() function, see
 // supabase/admin_security.sql). Everyone else is sent to the login page.
+
+// Verifying with Supabase costs two network round trips, and the sidebar's
+// links preload in the background, so a single page view used to trigger many
+// of them. A login that passed is remembered for a few minutes instead.
+const VERIFIED_TTL_MS = 5 * 60 * 1000;
+const verifiedTokens = new Map<string, number>(); // access token -> expiry time
+
+const isVerified = (token: string) => (verifiedTokens.get(token) ?? 0) > Date.now();
+
+const rememberVerified = (token: string) => {
+  if (verifiedTokens.size > 200) verifiedTokens.clear();
+  verifiedTokens.set(token, Date.now() + VERIFIED_TTL_MS);
+};
+
 export async function proxy(req: NextRequest) {
   const res = NextResponse.next();
+
+  if (req.nextUrl.pathname === "/admin/login") {
+    return res;
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,20 +43,26 @@ export async function proxy(req: NextRequest) {
     }
   );
 
-  if (req.nextUrl.pathname === "/admin/login") {
-    return res;
-  }
-
-  // getUser() verifies the session with Supabase instead of trusting the cookie
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const toLogin = (reason?: string) => {
     const url = new URL("/admin/login", req.url);
     if (reason) url.searchParams.set("error", reason);
     return NextResponse.redirect(url);
   };
+
+  // Reads the session cookie only (no network call unless it needs refreshing)
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) return toLogin();
+
+  // Fast path: this exact login was verified recently
+  if (isVerified(session.access_token)) return res;
+
+  // getUser() verifies the session with Supabase instead of trusting the cookie
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) return toLogin();
 
@@ -53,6 +77,7 @@ export async function proxy(req: NextRequest) {
     return redirect;
   }
 
+  rememberVerified(session.access_token);
   return res;
 }
 

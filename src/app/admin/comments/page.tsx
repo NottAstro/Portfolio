@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/app/admin/Sidebar";
+import AdminShell, { ADMIN_GHOST_BUTTON } from "@/app/admin/AdminShell";
 import { supabase } from "@/lib/supabase";
 import { fetchCommentsService } from "@/lib/commentService";
 import { confirmDelete, errorAlert, successToast } from "@/lib/alerts";
@@ -103,38 +103,24 @@ export default function AdminCommentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <Sidebar />
-
-      <main className="lg:ml-[250px] min-h-screen px-4 sm:px-6 lg:px-8 pt-[90px] lg:pt-8 pb-8">
-        <div className="max-w-[1250px] mx-auto">
-          {/* HEADER */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Comments</h1>
-
-              <p className="text-sm text-white/40 mt-1">
-                Manage portfolio comments
-              </p>
-            </div>
-
-            <button
-              onClick={fetchComments}
-              className="h-11 px-5 rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition flex items-center justify-center gap-2 text-sm w-full sm:w-fit"
-            >
-              <RefreshCcw size={14} />
-              Refresh
-            </button>
-          </div>
-
+    <AdminShell
+      title="Comments"
+      subtitle="Pin, like, reply to or remove comments on your wall"
+      action={
+        <button onClick={fetchComments} className={ADMIN_GHOST_BUTTON}>
+          <RefreshCcw size={14} />
+          Refresh
+        </button>
+      }
+    >
           {/* CONTENT */}
           <div className="space-y-4">
             {loading ? (
-              <div className="rounded-3xl border border-white/10 bg-white/[0.03] py-20 text-center text-white/40">
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] py-20 text-center text-white/40">
                 Loading comments...
               </div>
             ) : comments.length === 0 ? (
-              <div className="rounded-3xl border border-white/10 bg-white/[0.03] py-20 flex flex-col items-center gap-3 text-white/40">
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] py-20 flex flex-col items-center gap-3 text-white/40">
                 <MessageSquare size={28} />
                 No comments yet
               </div>
@@ -142,7 +128,7 @@ export default function AdminCommentsPage() {
               comments.map((comment) => (
                 <div
                   key={comment.id}
-                  className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 hover:border-white/20 transition"
+                  className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4 sm:p-5 hover:border-white/20 transition"
                 >
                   <div className="flex flex-col gap-5">
                     {/* TOP */}
@@ -261,8 +247,6 @@ export default function AdminCommentsPage() {
               ))
             )}
           </div>
-        </div>
-      </main>
-    </div>
+    </AdminShell>
   );
 }

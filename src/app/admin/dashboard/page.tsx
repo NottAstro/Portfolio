@@ -3,7 +3,7 @@
 import { useEffect, useEffectEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/app/admin/Sidebar";
+import AdminShell, { ADMIN_CARD, ADMIN_GHOST_BUTTON } from "@/app/admin/AdminShell";
 import { supabase } from "@/lib/supabase";
 import type { Comment } from "@/lib/commentService";
 import {
@@ -51,7 +51,6 @@ const count = (table: string) =>
 export default function DashboardPage() {
   const router = useRouter();
 
-  const [authorized, setAuthorized] = useState(false);
   const [stats, setStats] = useState<Stats>({
     projects: 0,
     messages: 0,
@@ -114,33 +113,36 @@ export default function DashboardPage() {
 
   const refresh = useEffectEvent(fetchDashboard);
 
-  // The proxy already checks the admin on the server; this guards client-side
-  // navigation if the session expires while the page is open
+  // The proxy already verified the admin on the server, so the page shows at
+  // once. Reading the local session is instant; it only redirects when a login
+  // expired while the tab was open.
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        router.replace("/admin/login");
-        return;
-      }
-      setAuthorized(true);
-      refresh();
+      if (!session) router.replace("/admin/login");
+      else refresh();
     });
   }, [router]);
 
-  // Live counts: refetch whenever any shown table changes
+  // Live counts: refetch when any shown table changes. Changes that arrive
+  // close together (e.g. several likes) are batched into one refresh.
   useEffect(() => {
-    if (!authorized) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const scheduleRefresh = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => refresh(), 400);
+    };
 
     const channel = supabase.channel("dashboard-live");
     for (const table of LIVE_TABLES) {
-      channel.on("postgres_changes", { event: "*", schema: "public", table }, () => refresh());
+      channel.on("postgres_changes", { event: "*", schema: "public", table }, scheduleRefresh);
     }
     channel.subscribe();
 
     return () => {
+      clearTimeout(timer);
       supabase.removeChannel(channel);
     };
-  }, [authorized]);
+  }, []);
 
   const cards: { icon: LucideIcon; title: string; value: number; caption: string; href: string }[] = [
     { icon: Folder, title: "Projects", value: stats.projects, caption: "Shown in your Projects section", href: "/admin/projects" },
@@ -156,43 +158,24 @@ export default function DashboardPage() {
     { icon: Layers, title: "Tech Stack", value: stats.techStacks, caption: "Logos in your Tech Stack", href: "/admin/tech" },
   ];
 
-  if (!authorized) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">
-        Checking session...
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-hidden">
-      <Sidebar />
-
-      <main className="lg:ml-[250px] pt-[95px] lg:pt-6 min-h-screen px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="max-w-[1400px] mx-auto">
-          {/* HEADER */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-semibold">Dashboard</h1>
-              <p className="text-sm text-white/40 mt-1">Live overview of your portfolio</p>
-            </div>
-
-            <button
-              onClick={fetchDashboard}
-              className="h-11 px-5 rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 transition-colors flex items-center justify-center gap-2 text-sm"
-            >
-              <RefreshCcw size={14} />
-              Refresh
-            </button>
-          </div>
-
+    <AdminShell
+      title="Dashboard"
+      subtitle="Live overview of your portfolio"
+      action={
+        <button onClick={fetchDashboard} className={ADMIN_GHOST_BUTTON}>
+          <RefreshCcw size={14} />
+          Refresh
+        </button>
+      }
+    >
           {/* TOP CARDS */}
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
             {cards.map(({ icon: Icon, title, value, caption, href }) => (
               <Link
                 key={title}
                 href={href}
-                className="rounded-[24px] border border-white/10 px-5 py-4 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06] transition-colors"
+                className={`${ADMIN_CARD} px-5 py-4 hover:border-white/20 hover:bg-white/[0.06] transition-colors`}
               >
                 <div className="flex justify-between items-start">
                   <div>
@@ -327,8 +310,6 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+    </AdminShell>
   );
 }

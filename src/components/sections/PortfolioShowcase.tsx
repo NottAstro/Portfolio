@@ -1,13 +1,12 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowUpRight, Code2, ChevronLeft, ChevronRight, LucideIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import usePortfolio from '@/hooks/usePortfolio'
-import useFloatingHeader from '@/hooks/useFloatingHeader'
 import { EASE } from '@/lib/motion'
-import { SECTION_TITLE_CLASS } from '@/lib/styles'
+import SectionHeader from '@/components/ui/SectionHeader'
 import { splitList } from '@/lib/list'
 import { getActiveProjectId, markReturnToProjects, setActiveProjectId } from '@/lib/projectReturn'
 import { isPageReload } from '@/lib/introState'
@@ -41,28 +40,6 @@ const slideIn = (from: -1 | 1, delay = 0) => ({
 })
 
 const pad = (n: number) => String(n).padStart(2, '0')
-
-function SectionHeader({ title, subtitle }: { title: string; subtitle: string }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const header = useFloatingHeader(ref)
-
-  return (
-    <div ref={ref} className="mb-14 flex flex-col items-center text-center">
-      <motion.h2
-        {...header.title}
-        className={`${SECTION_TITLE_CLASS} mb-4`}
-      >
-        {title}
-      </motion.h2>
-      <motion.p
-        {...header.subtitle}
-        className="text-white/60 text-sm sm:text-base leading-relaxed max-w-xl"
-      >
-        {subtitle}
-      </motion.p>
-    </div>
-  )
-}
 
 // Title / divider / description / tag list for the active project
 function ItemDetails({
@@ -304,20 +281,10 @@ export default function PortfolioShowcase() {
       {/* TECH STACK SECTION                         */}
       {/* ═══════════════════════════════════════════ */}
       <section id="techstack" className={SECTION_BASE_CLASS}>
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="mb-14 flex flex-col items-center text-center"
-        >
-          <h2 className={`${SECTION_TITLE_CLASS} mb-4`}>
-            Tech Stack
-          </h2>
-          <p className="text-white/50 text-[15px] leading-relaxed max-w-xl">
-            The modern technologies and tools I work with every day.
-          </p>
-        </motion.div>
+        <SectionHeader
+          title="Tech Stack"
+          subtitle="The technologies and tools I work with every day."
+        />
 
         <motion.div
           initial={{ opacity: 0, y: 50 }}

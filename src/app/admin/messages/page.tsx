@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/app/admin/Sidebar";
+import AdminShell, { ADMIN_GHOST_BUTTON } from "@/app/admin/AdminShell";
 import { supabase } from "@/lib/supabase";
 import { confirmDelete, errorAlert, successToast } from "@/lib/alerts";
 import useRealtimeTable from "@/hooks/useRealtimeTable";
@@ -72,42 +72,28 @@ export default function AdminMessagesPage() {
   const unread = messages.filter((m) => !m.is_read).length;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <Sidebar />
-
-      <main className="lg:ml-[250px] min-h-screen px-4 sm:px-6 lg:px-8 pt-[90px] lg:pt-8 pb-8">
-        <div className="max-w-[1250px] mx-auto">
-          {/* HEADER */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Messages</h1>
-
-              <p className="text-sm text-white/40 mt-1">
-                {unread > 0 ? `${unread} unread` : "Messages from the contact form"}
-              </p>
-            </div>
-
-            <button
-              onClick={fetchMessages}
-              className="h-11 px-5 rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition flex items-center justify-center gap-2 text-sm w-full sm:w-fit"
-            >
-              <RefreshCcw size={14} />
-              Refresh
-            </button>
-          </div>
-
+    <AdminShell
+      title="Messages"
+      subtitle={unread > 0 ? `${unread} unread` : "Messages from the contact form"}
+      action={
+        <button onClick={fetchMessages} className={ADMIN_GHOST_BUTTON}>
+          <RefreshCcw size={14} />
+          Refresh
+        </button>
+      }
+    >
           {/* CONTENT */}
           <div className="space-y-4">
             {loading ? (
-              <div className="rounded-3xl border border-white/10 bg-white/[0.03] py-20 text-center text-white/40">
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] py-20 text-center text-white/40">
                 Loading messages...
               </div>
             ) : loadError ? (
-              <div className="rounded-3xl border border-red-500/20 bg-red-500/5 py-16 px-6 text-center text-red-300 text-sm">
+              <div className="rounded-[24px] border border-red-500/20 bg-red-500/5 py-16 px-6 text-center text-red-300 text-sm">
                 {loadError}
               </div>
             ) : messages.length === 0 ? (
-              <div className="rounded-3xl border border-white/10 bg-white/[0.03] py-20 flex flex-col items-center gap-3 text-white/40">
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] py-20 flex flex-col items-center gap-3 text-white/40">
                 <Inbox size={28} />
                 No messages yet
               </div>
@@ -115,7 +101,7 @@ export default function AdminMessagesPage() {
               messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`rounded-3xl border p-4 sm:p-5 transition ${
+                  className={`rounded-[24px] border p-4 sm:p-5 transition ${
                     msg.is_read
                       ? "border-white/10 bg-white/[0.02]"
                       : "border-white/25 bg-white/[0.05]"
@@ -182,8 +168,6 @@ export default function AdminMessagesPage() {
               ))
             )}
           </div>
-        </div>
-      </main>
-    </div>
+    </AdminShell>
   );
 }

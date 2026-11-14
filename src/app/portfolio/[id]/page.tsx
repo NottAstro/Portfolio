@@ -45,7 +45,7 @@ function ProjectLink({ href, icon: Icon, label }: { href?: string; icon: LucideI
     <a
       href={href}
       target="_blank"
-      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-[#111] to-[#181818] border border-white/10 hover:bg-white/5 hover:border-white/20 transition-colors duration-200 text-sm"
+      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:bg-white/5 hover:border-white/20 transition-colors duration-200 text-sm"
     >
       <Icon size={14} />
       {label}
@@ -61,7 +61,7 @@ function ProjectLink({ href, icon: Icon, label }: { href?: string; icon: LucideI
 function StatCard({ icon: Icon, value, label }: { icon: LucideIcon; value: number; label: string }) {
   return (
     <motion.div
-      className="bg-gradient-to-br from-[#111] to-[#171717] border border-white/10 rounded-[24px] p-3 flex items-center gap-3"
+      className="bg-white/[0.04] border border-white/10 rounded-[24px] p-3 flex items-center gap-3"
     >
       <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
         <Icon size={16} />
@@ -262,7 +262,7 @@ export default function PortfolioDetailPage() {
                       duration: 0.5,
                       ease: EASE,
                     }}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-[#101010] to-[#181818] border border-white/10 text-[11px] text-white/75"
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-[11px] text-white/75"
                   >
                     <Box size={11} className="text-white/40" />
                     {t.trim()}
@@ -274,7 +274,7 @@ export default function PortfolioDetailPage() {
             {/* FEATURES */}
             <motion.div
               {...rise(0.22)}
-              className="bg-gradient-to-br from-[#101010] to-[#171717] border border-white/10 rounded-[24px] p-5 mt-8"
+              className="bg-white/[0.04] border border-white/10 rounded-[24px] p-5 mt-8"
             >
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles size={14} className="text-white/70" />
@@ -301,7 +301,7 @@ export default function PortfolioDetailPage() {
             {/* IMAGE */}
             {galleryImages.length > 0 && (
               <motion.div {...rise(0.12)} className="mb-5">
-                <div className="relative rounded-[24px] overflow-hidden border border-white/10 bg-gradient-to-br from-[#111] to-[#171717] max-w-[560px] mx-auto">
+                <div className="relative rounded-[24px] overflow-hidden border border-white/10 bg-white/[0.04] max-w-[560px] mx-auto">
                   <motion.img
                     key={currentImage}
                     {...rise()}

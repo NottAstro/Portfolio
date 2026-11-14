@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   LogOut,
+  ExternalLink,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -31,6 +32,8 @@ function SidebarContent({
   pathname: string;
   hideTitle?: boolean;
 }) {
+  const unread = useUnreadMessages();
+
   return (
     <>
       {/* TOP */}
@@ -41,65 +44,35 @@ function SidebarContent({
           </h1>
         )}
 
-        <nav className="space-y-2">
+        <nav className="space-y-1.5">
           {MENUS.map((menu) => {
             const Icon = menu.icon;
-            const active = pathname === menu.path;
+            const active = pathname.startsWith(menu.path);
+            const badge = menu.path === "/admin/messages" ? unread : 0;
 
             return (
-              <Link key={menu.path} href={menu.path} className="block">
-                <motion.div
-                  whileHover={{
-                    x: 6,
-                    scale: 1.02,
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 280,
-                    damping: 20,
-                  }}
-                  className={`relative overflow-hidden flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
-                    active
-                      ? "bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.12)]"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  {/* Hover Glow */}
-                  {!active && (
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 rounded-xl bg-gradient-to-r from-white/[0.06] to-transparent" />
-                  )}
+              <Link
+                key={menu.path}
+                href={menu.path}
+                aria-current={active ? "page" : undefined}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-white text-black"
+                    : "text-white/60 hover:text-white hover:bg-white/[0.06]"
+                }`}
+              >
+                <Icon size={17} />
+                {menu.name}
 
-                  {/* Active Bar */}
-                  {active && (
-                    <motion.div
-                      layoutId="activeSidebar"
-                      className="absolute left-0 top-2 bottom-2 w-[4px] rounded-full bg-black"
-                      transition={{
-                        type: "spring",
-                        stiffness: 350,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-
-                  {/* Icon */}
-                  <motion.div
-                    whileHover={{ rotate: -6 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                    }}
-                    className="relative z-10"
+                {badge > 0 && (
+                  <span
+                    className={`ml-auto min-w-5 h-5 px-1.5 rounded-full text-[11px] flex items-center justify-center ${
+                      active ? "bg-black text-white" : "bg-emerald-400 text-black"
+                    }`}
                   >
-                    <Icon size={17} />
-                  </motion.div>
-
-                  {/* Text */}
-                  <span className="relative z-10 text-sm font-medium tracking-wide">
-                    {menu.name}
+                    {badge}
                   </span>
-                </motion.div>
+                )}
               </Link>
             );
           })}
@@ -107,9 +80,46 @@ function SidebarContent({
       </div>
 
       {/* BOTTOM */}
-      <SignOutButton />
+      <div className="space-y-1.5">
+        <Link
+          href="/"
+          target="_blank"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-colors"
+        >
+          <ExternalLink size={17} />
+          View site
+        </Link>
+        <SignOutButton />
+      </div>
     </>
   );
+}
+
+// Number of unread contact messages, kept live
+function useUnreadMessages() {
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    const load = () =>
+      supabase
+        .from("messages")
+        .select("*", { count: "exact", head: true })
+        .eq("is_read", false)
+        .then(({ count }) => setUnread(count || 0));
+
+    load();
+
+    const channel = supabase
+      .channel("sidebar-unread")
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, load)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  return unread;
 }
 
 function SignOutButton() {
@@ -126,7 +136,7 @@ function SignOutButton() {
     <button
       onClick={signOut}
       disabled={busy}
-      className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
+      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/[0.06] transition-colors disabled:opacity-50"
     >
       <LogOut size={17} />
       {busy ? "Signing out..." : "Sign out"}

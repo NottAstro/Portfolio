@@ -51,6 +51,39 @@ body {
 input,
 textarea {
   caret-color: white;
+  user-select: text;
+}
+
+/* Reading text can be selected and copied (names, descriptions, email) */
+p,
+h1,
+h2,
+h3,
+li {
+  user-select: text;
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+/* Visible focus for keyboard users only */
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 .custom-scroll::-webkit-scrollbar {

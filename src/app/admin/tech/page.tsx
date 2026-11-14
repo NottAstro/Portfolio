@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/app/admin/Sidebar";
+import AdminShell, { ADMIN_CARD, ADMIN_PRIMARY_BUTTON } from "@/app/admin/AdminShell";
 import { supabase } from "@/lib/supabase";
 import { fetchTechStacks } from "@/lib/portfolioService";
 import { storageFileName, uploadPublicImage } from "@/lib/storage";
@@ -122,46 +122,29 @@ export default function TechStackPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      {/* SIDEBAR */}
-      <div className="fixed left-0 top-0 h-screen z-40">
-        <Sidebar />
-      </div>
-
-      {/* MAIN */}
-      <main className="ml-0 lg:ml-[250px] min-h-screen">
-        <div className="px-4 sm:px-6 md:px-8 pt-28 lg:pt-8 pb-8">
-          {/* HEADER */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold">
-                Tech Stack
-              </h1>
-
-              <p className="text-sm text-white/40 mt-1">
-                Manage technology stack
-              </p>
-            </div>
-
-            <button
-              onClick={() => {
-                resetForm();
-                setOpen(true);
-              }}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-black hover:scale-[1.02] transition"
-            >
-              <Plus size={16} />
-              Add Tech
-            </button>
-          </div>
-
+    <AdminShell
+      title="Tech Stack"
+      subtitle="Logos shown in the Tech Stack slider on your site"
+      action={
+        <button
+          onClick={() => {
+            resetForm();
+            setOpen(true);
+          }}
+          className={ADMIN_PRIMARY_BUTTON}
+        >
+          <Plus size={16} />
+          Add Tech
+        </button>
+      }
+    >
           {/* GRID */}
           {loading ? (
             <div className="text-white/40 text-sm">
               Loading...
             </div>
           ) : techStacks.length === 0 ? (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] h-[220px] flex items-center justify-center text-white/35 text-sm">
+            <div className={`${ADMIN_CARD} h-[220px] flex items-center justify-center text-white/35 text-sm`}>
               No tech stack
             </div>
           ) : (
@@ -169,14 +152,15 @@ export default function TechStackPage() {
               {techStacks.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 hover:border-white/20 transition"
+                  className={`${ADMIN_CARD} p-4 sm:p-5 hover:border-white/20 transition-colors`}
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
                       {item.logo_url ? (
                         <img
                           src={item.logo_url}
-                          className="w-full h-full object-cover"
+                          alt={item.name}
+                          className="w-full h-full object-contain p-2"
                         />
                       ) : (
                         <div className="w-full h-full bg-white/[0.03]" />
@@ -207,13 +191,11 @@ export default function TechStackPage() {
               ))}
             </div>
           )}
-        </div>
-      </main>
 
       {/* MODAL */}
       {open && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 py-6">
-          <div className="w-full max-w-md rounded-3xl bg-[#111] border border-white/10 p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-md rounded-[24px] bg-[#111] border border-white/10 p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
             {/* HEADER */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg sm:text-xl font-semibold">
@@ -232,7 +214,7 @@ export default function TechStackPage() {
             <label className="border border-dashed border-white/10 rounded-2xl bg-[#0f0f0f] h-40 sm:h-44 flex flex-col items-center justify-center cursor-pointer overflow-hidden mb-4">
               {preview ? (
                 <div className="relative w-full h-full group">
-                  <img src={preview} className="w-full h-full object-cover" />
+                  <img src={preview} alt="Logo preview" className="w-full h-full object-contain p-6" />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center">
                     <Upload size={24} className="text-white mb-2" />
                     <span className="text-sm font-medium text-white">Change Logo</span>
@@ -254,7 +236,7 @@ export default function TechStackPage() {
               <input
                 type="file"
                 hidden
-                accept="image/*"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
                 onChange={handleImage}
               />
             </label>
@@ -287,6 +269,6 @@ export default function TechStackPage() {
           </div>
         </div>
       )}
-    </div>
+    </AdminShell>
   );
 }

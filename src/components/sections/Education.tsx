@@ -1,6 +1,5 @@
 'use client'
 
-import { useRef } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
@@ -13,10 +12,9 @@ import {
   FolderGit2,
   CheckCircle2,
 } from 'lucide-react'
-import useFloatingHeader from '@/hooks/useFloatingHeader'
 import usePortfolio from '@/hooks/usePortfolio'
 import { EASE } from '@/lib/motion'
-import { SECTION_TITLE_CLASS } from '@/lib/styles'
+import SectionHeader from '@/components/ui/SectionHeader'
 
 type EducationEntry = {
   degree: string
@@ -123,8 +121,6 @@ function ChipGroup({ icon: Icon, label, items }: { icon: typeof BookOpen; label:
 }
 
 export default function Education() {
-  const headerRef = useRef<HTMLDivElement>(null)
-  const header = useFloatingHeader(headerRef)
   const { projects } = usePortfolio()
 
   return (
@@ -133,20 +129,12 @@ export default function Education() {
       className="w-full max-w-[1450px] mx-auto px-8 md:px-12 lg:px-20 pt-28 lg:pt-[88px] short:pt-[76px] pb-16 lg:pb-8 short:pb-3 text-white min-h-screen lg:flex lg:flex-col lg:justify-center"
     >
       {/* HEADER */}
-      <div ref={headerRef} className="mb-14 lg:mb-6 short:mb-4 flex flex-col items-center text-center">
-        <motion.h2
-          {...header.title}
-          className={`${SECTION_TITLE_CLASS} mb-4 lg:mb-3 short:mb-1.5`}
-        >
-          Education
-        </motion.h2>
-        <motion.p
-          {...header.subtitle}
-          className="text-white/60 text-sm sm:text-base leading-relaxed max-w-xl"
-        >
-          My academic foundation in computer science.
-        </motion.p>
-      </div>
+      <SectionHeader
+        title="Education"
+        subtitle="My academic foundation in computer science."
+        className="mb-14 lg:mb-6 short:mb-4"
+        titleClassName="mb-4 lg:mb-3 short:mb-1.5"
+      />
 
       {/* TIMELINE */}
       <div className="relative flex flex-col gap-8">

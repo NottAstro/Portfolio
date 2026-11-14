@@ -176,19 +176,45 @@ export default function Navbar() {
         </span>
 
         {isMobile ? (
-          <div
+          <button
+            type="button"
             onClick={() => setOpen(!open)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
             style={{
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'center',
               gap: 4,
+              width: 36,
+              height: 36,
+              alignItems: 'center',
               cursor: 'pointer',
+              background: 'transparent',
+              border: 'none',
             }}
           >
             {[0, 1, 2].map((i) => (
-              <span key={i} style={{ width: 20, height: 2, background: 'white' }} />
+              <span
+                key={i}
+                style={{
+                  width: 20,
+                  height: 2,
+                  background: 'white',
+                  borderRadius: 2,
+                  transition: 'transform 0.25s ease, opacity 0.2s ease',
+                  opacity: open && i === 1 ? 0 : 1,
+                  transform: !open
+                    ? 'none'
+                    : i === 0
+                      ? 'translateY(6px) rotate(45deg)'
+                      : i === 2
+                        ? 'translateY(-6px) rotate(-45deg)'
+                        : 'none',
+                }}
+              />
             ))}
-          </div>
+          </button>
         ) : (
           <div style={{ display: 'flex', gap: 'clamp(16px, 2.2vw, 34px)', alignItems: 'center' }}>
             {NAV_ITEMS.map((item) => (
@@ -233,17 +259,17 @@ export default function Navbar() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.25 }}
           style={{
             marginTop: 10,
-            borderRadius: 16,
-            background: 'rgba(13,13,13,0.9)',
+            borderRadius: 24,
+            background: 'rgba(13,13,13,0.95)',
             border: '1px solid var(--border)',
             backdropFilter: 'blur(12px)',
-            padding: 20,
+            padding: 10,
             display: 'flex',
             flexDirection: 'column',
-            gap: 18,
+            gap: 2,
           }}
         >
           {NAV_ITEMS.map((item) => (
@@ -253,8 +279,13 @@ export default function Navbar() {
               onClick={(e) => smoothScrollTo(e, `#${item.id}`)}
               style={{
                 fontFamily: mono,
-                fontSize: 13,
+                fontSize: 14,
+                letterSpacing: '0.06em',
                 color: linkColor(item.id),
+                textDecoration: 'none',
+                padding: '12px 14px',
+                borderRadius: 14,
+                background: activeSection === item.id ? 'rgba(255,255,255,0.07)' : 'transparent',
               }}
             >
               {item.label}

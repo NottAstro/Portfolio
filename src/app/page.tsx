@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 
 import AnimatedBackground from '@/components/AnimatedBackground'
 import Navbar from '@/components/ui/Navbar'
@@ -85,6 +85,8 @@ export default function Home() {
   }, [])
 
   return (
+    // Visitors who turned off animations in their system settings get fades only
+    <MotionConfig reducedMotion="user">
     <main style={{ position: 'relative', overflow: 'hidden' }}>
       <AnimatedBackground />
 
@@ -126,5 +128,6 @@ export default function Home() {
         )}
       </AnimatePresence>
     </main>
+    </MotionConfig>
   )
 }
